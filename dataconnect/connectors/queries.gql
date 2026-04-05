@@ -1,6 +1,6 @@
 # Fetch the full category tree, starting from root categories (no parent).
 # Returns up to 4 levels deep. Client reconstructs the tree from nested data.
-query GetCategoryTree @auth(level: USER) {
+query GetCategoryTree @auth(level: USER_EMAIL_VERIFIED) {
   categories(
     where: { parentId: { isNull: true } }
     orderBy: [{ name: ASC }]
@@ -27,7 +27,7 @@ query GetCategoryTree @auth(level: USER) {
 }
 
 # Fetch all articles in a given category (shallow — no subtree).
-query GetArticlesByCategory($categoryId: UUID!) @auth(level: USER) {
+query GetArticlesByCategory($categoryId: UUID!) @auth(level: USER_EMAIL_VERIFIED) {
   articles(
     where: { categoryId: { eq: $categoryId } }
     orderBy: [{ createdAt: DESC }]
@@ -42,7 +42,7 @@ query GetArticlesByCategory($categoryId: UUID!) @auth(level: USER) {
 }
 
 # Fetch a single article by slug, including full content.
-query GetArticleBySlug($slug: String!) @auth(level: USER) {
+query GetArticleBySlug($slug: String!) @auth(level: USER_EMAIL_VERIFIED) {
   article(first: { where: { slug: { eq: $slug } } }) {
     id
     title
@@ -54,3 +54,8 @@ query GetArticleBySlug($slug: String!) @auth(level: USER) {
     author { id email }
   }
 }
+
+# NOTE: SearchWiki (vector similarity) is intentionally absent from this
+# client connector. The Vector input type cannot be serialised by the client
+# SDK. Similarity search is performed server-side inside the Cloud Function
+# ragAnswer flow (B15-B18) via the Admin SDK executeGraphqlRead API.

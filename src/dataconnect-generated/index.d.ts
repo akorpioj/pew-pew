@@ -20,6 +20,22 @@ export interface Category_Key {
   __typename?: 'Category_Key';
 }
 
+export interface DeleteArticleData {
+  article_delete?: Article_Key | null;
+}
+
+export interface DeleteArticleVariables {
+  id: UUIDString;
+}
+
+export interface DeleteCategoryData {
+  category_delete?: Category_Key | null;
+}
+
+export interface DeleteCategoryVariables {
+  id: UUIDString;
+}
+
 export interface GetArticleBySlugData {
   article?: {
     id: UUIDString;
@@ -84,6 +100,19 @@ export interface GetCategoryTreeData {
   } & Category_Key)[];
 }
 
+export interface UpdateArticleData {
+  article_update?: Article_Key | null;
+}
+
+export interface UpdateArticleVariables {
+  id: UUIDString;
+  title: string;
+  slug: string;
+  content: unknown;
+  categoryId: UUIDString;
+  isPublished?: boolean | null;
+}
+
 export interface UpsertArticleData {
   article_upsert: Article_Key;
 }
@@ -95,6 +124,25 @@ export interface UpsertArticleVariables {
   content: unknown;
   categoryId: UUIDString;
   isPublished?: boolean | null;
+}
+
+export interface UpsertCategoryData {
+  category_upsert: Category_Key;
+}
+
+export interface UpsertCategoryVariables {
+  id?: UUIDString | null;
+  name: string;
+  description?: string | null;
+  parentId?: UUIDString | null;
+}
+
+export interface UpsertUserData {
+  user_upsert: User_Key;
+}
+
+export interface UpsertUserVariables {
+  email: string;
 }
 
 export interface User_Key {
@@ -113,6 +161,66 @@ export const upsertArticleRef: UpsertArticleRef;
 
 export function upsertArticle(vars: UpsertArticleVariables): MutationPromise<UpsertArticleData, UpsertArticleVariables>;
 export function upsertArticle(dc: DataConnect, vars: UpsertArticleVariables): MutationPromise<UpsertArticleData, UpsertArticleVariables>;
+
+interface UpdateArticleRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateArticleVariables): MutationRef<UpdateArticleData, UpdateArticleVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpdateArticleVariables): MutationRef<UpdateArticleData, UpdateArticleVariables>;
+  operationName: string;
+}
+export const updateArticleRef: UpdateArticleRef;
+
+export function updateArticle(vars: UpdateArticleVariables): MutationPromise<UpdateArticleData, UpdateArticleVariables>;
+export function updateArticle(dc: DataConnect, vars: UpdateArticleVariables): MutationPromise<UpdateArticleData, UpdateArticleVariables>;
+
+interface DeleteArticleRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: DeleteArticleVariables): MutationRef<DeleteArticleData, DeleteArticleVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: DeleteArticleVariables): MutationRef<DeleteArticleData, DeleteArticleVariables>;
+  operationName: string;
+}
+export const deleteArticleRef: DeleteArticleRef;
+
+export function deleteArticle(vars: DeleteArticleVariables): MutationPromise<DeleteArticleData, DeleteArticleVariables>;
+export function deleteArticle(dc: DataConnect, vars: DeleteArticleVariables): MutationPromise<DeleteArticleData, DeleteArticleVariables>;
+
+interface UpsertCategoryRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpsertCategoryVariables): MutationRef<UpsertCategoryData, UpsertCategoryVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpsertCategoryVariables): MutationRef<UpsertCategoryData, UpsertCategoryVariables>;
+  operationName: string;
+}
+export const upsertCategoryRef: UpsertCategoryRef;
+
+export function upsertCategory(vars: UpsertCategoryVariables): MutationPromise<UpsertCategoryData, UpsertCategoryVariables>;
+export function upsertCategory(dc: DataConnect, vars: UpsertCategoryVariables): MutationPromise<UpsertCategoryData, UpsertCategoryVariables>;
+
+interface DeleteCategoryRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: DeleteCategoryVariables): MutationRef<DeleteCategoryData, DeleteCategoryVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: DeleteCategoryVariables): MutationRef<DeleteCategoryData, DeleteCategoryVariables>;
+  operationName: string;
+}
+export const deleteCategoryRef: DeleteCategoryRef;
+
+export function deleteCategory(vars: DeleteCategoryVariables): MutationPromise<DeleteCategoryData, DeleteCategoryVariables>;
+export function deleteCategory(dc: DataConnect, vars: DeleteCategoryVariables): MutationPromise<DeleteCategoryData, DeleteCategoryVariables>;
+
+interface UpsertUserRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpsertUserVariables): MutationRef<UpsertUserData, UpsertUserVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpsertUserVariables): MutationRef<UpsertUserData, UpsertUserVariables>;
+  operationName: string;
+}
+export const upsertUserRef: UpsertUserRef;
+
+export function upsertUser(vars: UpsertUserVariables): MutationPromise<UpsertUserData, UpsertUserVariables>;
+export function upsertUser(dc: DataConnect, vars: UpsertUserVariables): MutationPromise<UpsertUserData, UpsertUserVariables>;
 
 interface GetCategoryTreeRef {
   /* Allow users to create refs without passing in DataConnect */

@@ -8,31 +8,31 @@ Phases 4–6 as described in the Implementation Plan and Architecture documents.
 ## Phase 4 — AI & Search (The "Brain")
 
 ### 4.1 Schema: add `@auth` directives to lock down Data Connect operations
-
+(IMPLEMENTED 2026/04/05)
 The current `schema.gql`, `queries.gql`, and `mutations.gql` use `@auth(level: USER)` uniformly.
 The SDD specifies per-role expressions that are still missing.
 
-- [ ] **B1:** Add `@auth` write-guard to `UpsertArticle` mutation — restrict to EXPERT/ADMIN only:
+- [X] **B1:** Add `@auth` write-guard to `UpsertArticle` mutation — restrict to EXPERT/ADMIN only:
   ```graphql
   @auth(expr: "auth.token.role == 'EXPERT' || auth.token.role == 'ADMIN'")
   ```
-- [ ] **B2:** Add ownership check to update path of `UpsertArticle` — author can only edit their own articles:
+- [X] **B2:** Add ownership check to update path of `UpsertArticle` — author can only edit their own articles:
   ```graphql
   @auth(expr: "(auth.token.role == 'ADMIN') || (auth.token.role == 'EXPERT' && auth.uid == item.authorId)")
   ```
   *(requires a separate `UpdateArticle` mutation for the ownership expression to reference `item`)*
-- [ ] **B3:** Add `DeleteArticle` mutation with ADMIN-only `@auth` guard
-- [ ] **B4:** Add `SearchWiki` similarity-search query (see §4.3 below) with `@auth(level: USER)`
-- [ ] **B5:** Add `@auth(level: USER_EMAIL_VERIFIED)` to all read queries (`GetCategoryTree`, `GetArticlesByCategory`, `GetArticleBySlug`) — tighten from `USER` to verified email
-- [ ] **B6:** Add `UpsertCategory` and `DeleteCategory` mutations restricted to ADMIN only
-- [ ] **B7:** Add `UpsertUser` mutation (upsert by `auth.uid`) for first-login user record creation, restricted to `@auth(level: USER)`
-- [ ] **B8:** Re-run `firebase dataconnect:sdk:generate` after every GQL change to regenerate the type-safe SDK
+- [X] **B3:** Add `DeleteArticle` mutation with ADMIN-only `@auth` guard
+- [X] **B4:** Add `SearchWiki` similarity-search query (see §4.3 below) with `@auth(level: USER)`
+- [X] **B5:** Add `@auth(level: USER_EMAIL_VERIFIED)` to all read queries (`GetCategoryTree`, `GetArticlesByCategory`, `GetArticleBySlug`) — tighten from `USER` to verified email
+- [X] **B6:** Add `UpsertCategory` and `DeleteCategory` mutations restricted to ADMIN only
+- [X] **B7:** Add `UpsertUser` mutation (upsert by `auth.uid`) for first-login user record creation, restricted to `@auth(level: USER)`
+- [X] **B8:** Re-run `firebase dataconnect:sdk:generate` after every GQL change to regenerate the type-safe SDK
 
 ---
 
 ### 4.2 Genkit embedding flow (Vector Ingestion)
 
-The `contentEmbedding` column in the `Article` table is currently never populated — the UpsertArticle
+The `embedding` column in the `Article` table is currently never populated — the UpsertArticle
 mutation explicitly omits it. This flow provides the "write path" for embeddings.
 
 - [ ] **B9:** Create a `functions/` directory and initialize a Node.js/TypeScript Firebase Functions project:
@@ -63,13 +63,13 @@ mutation explicitly omits it. This flow provides the "write path" for embeddings
 
 ### 4.3 Data Connect: Similarity Search query
 
-- [ ] **B15:** Add `embedding` field to the `Article` table (rename `contentEmbedding` → `embedding` for consistency with the SDD, or keep `contentEmbedding` and document the mismatch):
-  > **Note:** The current `schema.gql` has the field named `embedding`; the generated SDK uses `contentEmbedding`. Reconcile and re-generate.
+- [ ] **B15:** Add `embedding` field to the `Article` table:
+  > **Note:** The current `schema.gql` has the field named `embedding`; the generated SDK uses `contentEmbedding`. Re-generate.
 - [ ] **B16:** Add `SearchWiki` query to `queries.gql` using pgvector cosine similarity:
   ```graphql
   query SearchWiki($vector: Vector!) @auth(level: USER) {
     articles_similaritySearch(
-      compare: { field: contentEmbedding, vector: $vector }
+      compare: { field: embedding, vector: $vector }
       limit: 3
       where: { isPublished: { eq: true } }
     ) {
