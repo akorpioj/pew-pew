@@ -77,9 +77,9 @@ const result = await getCategoryTree(dataConnect);
 ---
 
 ### AI Assistant Sheet
-- [ ] **T21:** Create `src/components/AiAssistantSheet.tsx` — uses the existing Shadcn `Sheet` component, contains a chat `Input` and scrollable response area
-- [ ] **T22:** Add a persistent trigger button (floating or in the header) to open the sheet
-- [ ] **T23:** Wire the query input → similarity search → Gemini response (stub with `"AI coming soon"` until Phase 4 is done)
+- [X] **T21:** Create `src/components/AiAssistantSheet.tsx` — uses the existing Shadcn `Sheet` component, contains a chat `Input` and scrollable response area
+- [X] **T22:** Add a persistent trigger button (floating or in the header) to open the sheet
+- [X] **T23:** Wire the query input → similarity search → Gemini response (stub with `"AI coming soon"` until Phase 4 is done)
 
 ---
 

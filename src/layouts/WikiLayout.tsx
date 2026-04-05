@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useAuth } from "@/contexts/AuthContext";
 import CategoryTree from "@/components/CategoryTree";
+import AiAssistantSheet from "@/components/AiAssistantSheet";
 
 export default function WikiLayout() {
   const { user, signOut } = useAuth();
@@ -44,10 +45,12 @@ export default function WikiLayout() {
               {user?.email}
             </span>
             <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon-xs" onClick={signOut} aria-label="Sign out">
-                  <LogOutIcon />
-                </Button>
+              <TooltipTrigger
+                render={
+                  <Button variant="ghost" size="icon-xs" onClick={signOut} aria-label="Sign out" />
+                }
+              >
+                <LogOutIcon />
               </TooltipTrigger>
               <TooltipContent side="right">Sign out</TooltipContent>
             </Tooltip>
@@ -59,6 +62,9 @@ export default function WikiLayout() {
         {/* Top bar */}
         <header className="flex h-10 items-center gap-2 border-b px-3">
           <SidebarTrigger />
+          <div className="ml-auto">
+            <AiAssistantSheet />
+          </div>
         </header>
 
         {/* Page content */}
