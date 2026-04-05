@@ -45,9 +45,9 @@ const result = await getCategoryTree(dataConnect);
 ---
 
 ### Category Sidebar
-- [ ] **T10:** Create `src/components/CategoryTree.tsx` — recursive component that renders categories from `useGetCategoryTree()` hook into `SidebarMenu` / `SidebarMenuItem` nodes
-- [ ] **T11:** Wire category click → navigate to `/wiki/category/:categoryId`
-- [ ] **T12:** Add "New Article" `SidebarMenuItem` (visible to EXPERTs only, based on auth role)
+- [X] **T10:** Create `src/components/CategoryTree.tsx` — recursive component that renders categories from `useGetCategoryTree()` hook into `SidebarMenu` / `SidebarMenuItem` nodes
+- [X] **T11:** Wire category click → navigate to `/wiki/category/:categoryId`
+- [X] **T12:** Add "New Article" `SidebarMenuItem` (visible to EXPERTs only, based on auth role)
 
 ---
 
