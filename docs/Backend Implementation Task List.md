@@ -125,7 +125,7 @@ npx firebase-tools@latest auth:export users.json --project pew-bab23 Get-Content
 - [ ] **B22:** Create `functions/src/syncUserOnSignup.ts` — an `onDocumentCreated` or `beforeUserCreated` Auth trigger that:
   1. Sets the default claim `{ role: 'VIEWER' }` for every new sign-up
   2. Upserts a `User` row in Data Connect (so the FK from Article → User is always satisfiable)
-- [ ] **B23:** Document the one-time bootstrap command to make yourself ADMIN:
+- [X] **B23:** Document the one-time bootstrap command to make yourself ADMIN:
   ```ts
   // Run once in Firebase Admin SDK (e.g. a local script):
   admin.auth().setCustomUserClaims("<your-uid>", { role: "ADMIN" });
