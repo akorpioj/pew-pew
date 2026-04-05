@@ -84,7 +84,7 @@ const result = await getCategoryTree(dataConnect);
 ---
 
 ### Polish
-- [ ] **T24:** Add `Tooltip` to icon-only buttons (New Article, AI trigger)
-- [ ] **T25:** Add `Separator` between sidebar sections (categories / actions)
-- [ ] **T26:** Implement error boundary / 404 page for unknown routes/slugs
-- [ ] **T27:** Verify EXPERT-only routes/actions are hidden from VIEWERs using the auth role from the JWT custom claim
+- [X] **T24:** Add `Tooltip` to icon-only buttons (New Article, AI trigger)
+- [X] **T25:** Add `Separator` between sidebar sections (categories / actions)
+- [X] **T26:** Implement error boundary / 404 page for unknown routes/slugs
+- [X] **T27:** Verify EXPERT-only routes/actions are hidden from VIEWERs using the auth role from the JWT custom claim
