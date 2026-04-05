@@ -15,8 +15,8 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  SidebarSeparator,
 } from "@/components/ui/sidebar";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Skeleton } from "@/components/ui/skeleton";
 
 // Recursive type derived from the generated SDK shape
@@ -112,46 +112,57 @@ export default function CategoryTree() {
       .finally(() => setLoading(false));
   }, []);
 
+  const canCreate = role === "EXPERT" || role === "ADMIN";
+
   return (
-    <SidebarGroup>
-      <div className="flex items-center justify-between pr-2">
+    <>
+      {/* T25: Categories section */}
+      <SidebarGroup>
         <SidebarGroupLabel>Categories</SidebarGroupLabel>
 
-        {/* T12: New Article — visible to EXPERTs only */}
-        {(role === "EXPERT" || role === "ADMIN") && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={() => navigate("/wiki/edit")}
-                className="rounded p-0.5 text-sidebar-foreground/60 hover:text-sidebar-foreground"
-                aria-label="New article"
-              >
-                <FilePlusIcon className="size-3.5" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="right">New article</TooltipContent>
-          </Tooltip>
-        )}
-      </div>
+        <SidebarGroupContent>
+          {loading ? (
+            <div className="space-y-1 px-2">
+              {[...Array(4)].map((_, i) => (
+                <Skeleton key={i} className="h-6 w-full rounded" />
+              ))}
+            </div>
+          ) : categories.length === 0 ? (
+            <p className="px-2 text-xs text-muted-foreground">No categories yet.</p>
+          ) : (
+            <SidebarMenu>
+              {categories.map((cat) => (
+                <CategoryItem key={cat.id} category={cat} depth={0} />
+              ))}
+            </SidebarMenu>
+          )}
+        </SidebarGroupContent>
+      </SidebarGroup>
 
-      <SidebarGroupContent>
-        {loading ? (
-          <div className="space-y-1 px-2">
-            {[...Array(4)].map((_, i) => (
-              <Skeleton key={i} className="h-6 w-full rounded" />
-            ))}
-          </div>
-        ) : categories.length === 0 ? (
-          <p className="px-2 text-xs text-muted-foreground">No categories yet.</p>
-        ) : (
-          <SidebarMenu>
-            {categories.map((cat) => (
-              <CategoryItem key={cat.id} category={cat} depth={0} />
-            ))}
-          </SidebarMenu>
-        )}
-      </SidebarGroupContent>
-    </SidebarGroup>
+      {/* T25: Separator + Actions section (T24: tooltip via SidebarMenuButton tooltip prop) */}
+      {canCreate && (
+        <>
+          <SidebarSeparator />
+          <SidebarGroup>
+            <SidebarGroupLabel>Actions</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  {/* T24: tooltip handled by SidebarMenuButton's built-in tooltip prop */}
+                  <SidebarMenuButton
+                    onClick={() => navigate("/wiki/edit")}
+                    tooltip="New article"
+                  >
+                    <FilePlusIcon />
+                    <span>New Article</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </>
+      )}
+    </>
   );
 }
 
