@@ -3,12 +3,13 @@
 **Goal:** Set up the cloud and local foundations.
 
 * **Task 1.1: Firebase Project Initialization**
-
+(IMPLEMENTED 2026/04/05)
   * **Action:** Go to the [Firebase Console](https://console.firebase.google.com/), create a new project, and enable **Blaze (Pay-as-you-go) Plan** (required for Cloud SQL).  
   * **Action:** In your terminal, run npm install -g firebase-tools, then firebase login.  
   * **Action:** Create a project folder and run firebase init dataconnect. Select "Use an existing project".
 
-* **Task 1.2: Local Emulator Setup**  
+* **Task 1.2: Local Emulator Setup**
+(IMPLEMENTED 2026/04/05)
   * **Action:** Ensure Docker is running. Start the emulators with firebase emulators:start.  
   * **Instruction:** This provides a local PostgreSQL instance and a Data Connect UI to test your GraphQL queries without incurring costs.
 
@@ -18,10 +19,12 @@
 
 **Goal:** Define the wiki's "Filing Cabinet" structure.
 
-* **Task 2.1: Define the Schema**  
+* **Task 2.1: Define the Schema**
+(IMPLEMENTED 2026/04/05)
   * **Action:** Open dataconnect/schema/schema.gql. Define the User, Category, and Article tables as per the Design Document.  
   * **Key Detail:** Ensure the Article table has a content: Any\! field (for BlockNote JSON) and embedding: Vector(768) for Gemini search.  
-* **Task 2.2: Write Operations**  
+* **Task 2.2: Write Operations**
+(IMPLEMENTED 2026/04/05)  
   * **Action:** In dataconnect/queries.gql, write a recursive query to fetch the category tree.  
   * **Action:** In dataconnect/mutations.gql, write the upsertArticle mutation.  
   * **Instruction:** Run firebase dataconnect:sdk:generate to create your type-safe React hooks.
@@ -32,10 +35,12 @@
 
 **Goal:** Build the interface experts will actually use.
 
-* **Task 3.1: React & Shadcn/ui Setup**  
+* **Task 3.1: React & Shadcn/ui Setup**
+(IMPLEMENTED 2026/04/05)
   * **Action:** Scaffold with Vite: npm create vite@latest my-wiki \-- \--template react-ts.  
-  * **Action:** Follow the [Shadcn/ui installation guide](https://ui.shadcn.com/docs/installation/vite). Install the Sidebar, Button, Card, and Sheet components.  
-* **Task 3.2: Implement BlockNote**  
+  * **Action:** Follow the [Shadcn/ui installation guide](https://ui.shadcn.com/docs/installation/vite). Install the Sidebar, Button, Card, and Sheet components.
+* **Task 3.2: Implement BlockNote**
+(IMPLEMENTED 2026/04/05)
   * **Action:** Install @blocknote/core and @blocknote/react.  
   * **Action:** Create an Editor component. Configure it to use editor.document to extract the JSON.  
   * **Instruction:** Bind the "Save" button to the useUpsertArticle() hook generated in Task 2.2.

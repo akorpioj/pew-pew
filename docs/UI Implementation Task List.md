@@ -64,15 +64,15 @@ const result = await getCategoryTree(dataConnect);
 ---
 
 ### BlockNote Editor
-- [ ] **T17:** Create `src/components/Editor.tsx` — `useCreateBlockNote()` + `<BlockNoteView>`, exposes `getContent(): Block[]` via ref/callback
-- [ ] **T18:** Create `src/pages/ArticleEditorPage.tsx` — contains:
+- [X] **T17:** Create `src/components/Editor.tsx` — `useCreateBlockNote()` + `<BlockNoteView>`, exposes `getContent(): Block[]` via ref/callback
+- [X] **T18:** Create `src/pages/ArticleEditorPage.tsx` — contains:
   - Title `Input`
   - Category `Select` (populated from `useGetCategoryTree()`)
   - `isPublished` toggle
   - `Editor` component
   - Save `Button`
-- [ ] **T19:** Wire Save button to `useUpsertArticle()` — pass `title`, `slug` (auto-derived from title), `content`, `categoryId`, `isPublished`
-- [ ] **T20:** Auto-generate `slug` from title (kebab-case, unique suffix if needed)
+- [X] **T19:** Wire Save button to `useUpsertArticle()` — pass `title`, `slug` (auto-derived from title), `content`, `categoryId`, `isPublished`
+- [X] **T20:** Auto-generate `slug` from title (kebab-case, unique suffix if needed)
 
 ---
 
