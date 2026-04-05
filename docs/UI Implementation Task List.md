@@ -30,6 +30,15 @@ const result = await getCategoryTree(dataConnect);
 - [X] **T6:** Create `src/pages/LoginPage.tsx` — Google sign-in button (using Shadcn `Button`), redirects on success
 - [X] **T7:** Create `src/components/ProtectedRoute.tsx` — redirects to `/login` if `user` is null
 
+The `CONFIGURATION_NOT_FOUND` error means Google Sign-In is not enabled in the Firebase Console. 
+**Fix:**
+1. Go to [Firebase Console](https://console.firebase.google.com) → select project <your-project>  
+2. Click **Security** → **Authentication** in the left bottom sidebar
+3. Click the **Sign-in method** tab
+4. Click **Google** → toggle **Enable** → set your support email → click **Save**
+
+Once enabled, also confirm `localhost` is in the authorized domains list (it should be there by default under Authentication → Settings → Authorized domains).
+
 ---
 
 ### Routing & App Shell
