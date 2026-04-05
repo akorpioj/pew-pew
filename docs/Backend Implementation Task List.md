@@ -90,12 +90,12 @@ mutation explicitly omits it. This flow provides the "write path" for embeddings
 
 ### 4.4 Gemini RAG response (AI Assistant)
 
-- [ ] **B19:** Create `functions/src/ragAnswer.ts` — an HTTPS-callable Genkit flow:
+- [X] **B19:** Create `functions/src/ragAnswer.ts` — an HTTPS-callable Genkit flow:
   1. Accept `{ question: string, contextArticles: { title: string, content: Block[] }[] }`
   2. Flatten article content to text (`flattenBlocks` utility)
   3. Build a grounded prompt: *"Answer only using the provided expert context. Context: …"*
   4. Call `generate()` with `googleai/gemini-2.0-flash` and return `{ answer: string }`
-- [ ] **B20:** Update `AiAssistantSheet.tsx` to replace the `queryAi` stub with a two-step call:
+- [X] **B20:** Update `AiAssistantSheet.tsx` to replace the `queryAi` stub with a two-step call:
   - Step 1: embed the query → `searchWiki` → retrieve context articles
   - Step 2: call `ragAnswer` with question + context → display response
 

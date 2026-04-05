@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { askWikiCallable } from "@/lib/functions";
+import { searchWikiByQueryCallable, ragAnswerCallable } from "@/lib/functions";
 
 interface Message {
   role: "user" | "assistant";
@@ -38,8 +38,13 @@ export default function AiAssistantSheet() {
     setLoading(true);
 
     try {
-      const result = await askWikiCallable({ question: query });
-      setMessages((prev) => [...prev, { role: "assistant", text: result.data.answer }]);
+      // Step 1: embed the question server-side and retrieve top-3 relevant articles.
+      const searchResult = await searchWikiByQueryCallable({ question: query });
+      const contextArticles = searchResult.data.articles;
+
+      // Step 2: generate a grounded answer from the retrieved context.
+      const answerResult = await ragAnswerCallable({ question: query, contextArticles });
+      setMessages((prev) => [...prev, { role: "assistant", text: answerResult.data.answer }]);
     } catch {
       setMessages((prev) => [
         ...prev,

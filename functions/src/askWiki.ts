@@ -1,7 +1,7 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { ai } from "./genkit";
-import { flattenBlocks } from "./flattenBlocks";
 import { searchWiki } from "./searchWiki";
+import { ragAnswerFlow } from "./ragAnswer";
 
 const TEXT_EMBEDDING_004 = "googleai/text-embedding-004";
 
@@ -49,29 +49,7 @@ export const askWiki = onCall(
     // Step 2: Retrieve the top-3 most relevant published articles.
     const articles = await searchWiki(vector, 3);
 
-    // Step 3: Build the grounded context string from article content.
-    let contextText = "";
-    for (const article of articles) {
-      const bodyText = article.content
-        ? flattenBlocks(article.content as Parameters<typeof flattenBlocks>[0])
-        : "";
-      if (bodyText) {
-        contextText += `## ${article.title}\n${bodyText}\n\n`;
-      }
-    }
-
-    // Step 4: Generate a grounded answer with Gemini.
-    const prompt =
-      contextText.trim()
-        ? `You are an expert assistant for a private knowledge wiki. Answer ONLY using the wiki context below. If the answer is not covered by the context, say "I don't have enough information in the wiki to answer that."
-
-Wiki context:
-${contextText.trim()}
-
-Question: ${question}`
-        : `The wiki search returned no relevant articles. Politely tell the user you could not find relevant information in the wiki for: ${question}`;
-
-    const { text } = await ai.generate(prompt);
-    return { answer: text };
+    // Step 3+4: Build grounded prompt and generate answer (ragAnswerFlow).
+    return ragAnswerFlow({ question, contextArticles: articles });
   }
 );
