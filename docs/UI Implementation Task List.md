@@ -33,14 +33,14 @@ const result = await getCategoryTree(dataConnect);
 ---
 
 ### Routing & App Shell
-- [ ] **T8:** Set up `react-router-dom` routes in `App.tsx`:
+- [X] **T8:** Set up `react-router-dom` routes in `App.tsx`:
   - `/login` → `LoginPage`
   - `/` → redirect to `/wiki`
   - `/wiki` → `WikiLayout` (protected)
   - `/wiki/category/:categoryId` → `ArticleListPage`
   - `/wiki/article/:slug` → `ArticleViewPage`
   - `/wiki/edit/:slug?` → `ArticleEditorPage` (EXPERT only)
-- [ ] **T9:** Create `src/layouts/WikiLayout.tsx` — wraps the existing Shadcn `Sidebar` + main content area
+- [X] **T9:** Create `src/layouts/WikiLayout.tsx` — wraps the existing Shadcn `Sidebar` + main content area
 
 ---
 
