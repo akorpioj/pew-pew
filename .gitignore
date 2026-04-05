@@ -1,14 +1,24 @@
-.venv
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
 node_modules
-pglite-debug.log
-# Firebase
-.firebase/
-firebase-debug.log
-firebase-debug.*.log
-firebaseconfig.js
-ui-debug.log
-dataconnect-debug.log
-dataconnect-debug.*.log
+dist
+dist-ssr
+*.local
 
-
-
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
