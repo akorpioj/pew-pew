@@ -11,10 +11,12 @@ This README will guide you through the process of using the generated JavaScript
   - [*GetCategoryTree*](#getcategorytree)
   - [*GetArticlesByCategory*](#getarticlesbycategory)
   - [*GetArticleBySlug*](#getarticlebyslug)
+  - [*GetRevisionsByArticle*](#getrevisionsbyarticle)
 - [**Mutations**](#mutations)
   - [*UpsertArticle*](#upsertarticle)
   - [*UpdateArticle*](#updatearticle)
   - [*DeleteArticle*](#deletearticle)
+  - [*CreateRevision*](#createrevision)
   - [*UpsertCategory*](#upsertcategory)
   - [*DeleteCategory*](#deletecategory)
   - [*UpsertUser*](#upsertuser)
@@ -417,6 +419,122 @@ executeQuery(ref).then((response) => {
 });
 ```
 
+## GetRevisionsByArticle
+You can execute the `GetRevisionsByArticle` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+getRevisionsByArticle(vars: GetRevisionsByArticleVariables, options?: ExecuteQueryOptions): QueryPromise<GetRevisionsByArticleData, GetRevisionsByArticleVariables>;
+
+interface GetRevisionsByArticleRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetRevisionsByArticleVariables): QueryRef<GetRevisionsByArticleData, GetRevisionsByArticleVariables>;
+}
+export const getRevisionsByArticleRef: GetRevisionsByArticleRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+getRevisionsByArticle(dc: DataConnect, vars: GetRevisionsByArticleVariables, options?: ExecuteQueryOptions): QueryPromise<GetRevisionsByArticleData, GetRevisionsByArticleVariables>;
+
+interface GetRevisionsByArticleRef {
+  ...
+  (dc: DataConnect, vars: GetRevisionsByArticleVariables): QueryRef<GetRevisionsByArticleData, GetRevisionsByArticleVariables>;
+}
+export const getRevisionsByArticleRef: GetRevisionsByArticleRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the getRevisionsByArticleRef:
+```typescript
+const name = getRevisionsByArticleRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `GetRevisionsByArticle` query requires an argument of type `GetRevisionsByArticleVariables`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface GetRevisionsByArticleVariables {
+  articleId: UUIDString;
+}
+```
+### Return Type
+Recall that executing the `GetRevisionsByArticle` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `GetRevisionsByArticleData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface GetRevisionsByArticleData {
+  revisions: ({
+    id: UUIDString;
+    savedAt: TimestampString;
+    savedBy: {
+      id: string;
+      email: string;
+    } & User_Key;
+  } & Revision_Key)[];
+}
+```
+### Using `GetRevisionsByArticle`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, getRevisionsByArticle, GetRevisionsByArticleVariables } from '@dataconnect/generated';
+
+// The `GetRevisionsByArticle` query requires an argument of type `GetRevisionsByArticleVariables`:
+const getRevisionsByArticleVars: GetRevisionsByArticleVariables = {
+  articleId: ..., 
+};
+
+// Call the `getRevisionsByArticle()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await getRevisionsByArticle(getRevisionsByArticleVars);
+// Variables can be defined inline as well.
+const { data } = await getRevisionsByArticle({ articleId: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await getRevisionsByArticle(dataConnect, getRevisionsByArticleVars);
+
+console.log(data.revisions);
+
+// Or, you can use the `Promise` API.
+getRevisionsByArticle(getRevisionsByArticleVars).then((response) => {
+  const data = response.data;
+  console.log(data.revisions);
+});
+```
+
+### Using `GetRevisionsByArticle`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, getRevisionsByArticleRef, GetRevisionsByArticleVariables } from '@dataconnect/generated';
+
+// The `GetRevisionsByArticle` query requires an argument of type `GetRevisionsByArticleVariables`:
+const getRevisionsByArticleVars: GetRevisionsByArticleVariables = {
+  articleId: ..., 
+};
+
+// Call the `getRevisionsByArticleRef()` function to get a reference to the query.
+const ref = getRevisionsByArticleRef(getRevisionsByArticleVars);
+// Variables can be defined inline as well.
+const ref = getRevisionsByArticleRef({ articleId: ..., });
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = getRevisionsByArticleRef(dataConnect, getRevisionsByArticleVars);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.revisions);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.revisions);
+});
+```
+
 # Mutations
 
 There are two ways to execute a Data Connect Mutation using the generated Web SDK:
@@ -786,6 +904,118 @@ console.log(data.article_delete);
 executeMutation(ref).then((response) => {
   const data = response.data;
   console.log(data.article_delete);
+});
+```
+
+## CreateRevision
+You can execute the `CreateRevision` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [dataconnect-generated/index.d.ts](./index.d.ts):
+```typescript
+createRevision(vars: CreateRevisionVariables): MutationPromise<CreateRevisionData, CreateRevisionVariables>;
+
+interface CreateRevisionRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreateRevisionVariables): MutationRef<CreateRevisionData, CreateRevisionVariables>;
+}
+export const createRevisionRef: CreateRevisionRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+createRevision(dc: DataConnect, vars: CreateRevisionVariables): MutationPromise<CreateRevisionData, CreateRevisionVariables>;
+
+interface CreateRevisionRef {
+  ...
+  (dc: DataConnect, vars: CreateRevisionVariables): MutationRef<CreateRevisionData, CreateRevisionVariables>;
+}
+export const createRevisionRef: CreateRevisionRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the createRevisionRef:
+```typescript
+const name = createRevisionRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `CreateRevision` mutation requires an argument of type `CreateRevisionVariables`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface CreateRevisionVariables {
+  articleId: UUIDString;
+  content: unknown;
+}
+```
+### Return Type
+Recall that executing the `CreateRevision` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `CreateRevisionData`, which is defined in [dataconnect-generated/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface CreateRevisionData {
+  revision_insert: Revision_Key;
+}
+```
+### Using `CreateRevision`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, createRevision, CreateRevisionVariables } from '@dataconnect/generated';
+
+// The `CreateRevision` mutation requires an argument of type `CreateRevisionVariables`:
+const createRevisionVars: CreateRevisionVariables = {
+  articleId: ..., 
+  content: ..., 
+};
+
+// Call the `createRevision()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await createRevision(createRevisionVars);
+// Variables can be defined inline as well.
+const { data } = await createRevision({ articleId: ..., content: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await createRevision(dataConnect, createRevisionVars);
+
+console.log(data.revision_insert);
+
+// Or, you can use the `Promise` API.
+createRevision(createRevisionVars).then((response) => {
+  const data = response.data;
+  console.log(data.revision_insert);
+});
+```
+
+### Using `CreateRevision`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, createRevisionRef, CreateRevisionVariables } from '@dataconnect/generated';
+
+// The `CreateRevision` mutation requires an argument of type `CreateRevisionVariables`:
+const createRevisionVars: CreateRevisionVariables = {
+  articleId: ..., 
+  content: ..., 
+};
+
+// Call the `createRevisionRef()` function to get a reference to the mutation.
+const ref = createRevisionRef(createRevisionVars);
+// Variables can be defined inline as well.
+const ref = createRevisionRef({ articleId: ..., content: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = createRevisionRef(dataConnect, createRevisionVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.revision_insert);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.revision_insert);
 });
 ```
 

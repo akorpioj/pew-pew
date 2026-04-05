@@ -55,6 +55,19 @@ query GetArticleBySlug($slug: String!) @auth(level: USER_EMAIL_VERIFIED) {
   }
 }
 
+# Fetch all revisions for a given article, newest first.
+# Used by the "Version History" slide-out (B30).
+query GetRevisionsByArticle($articleId: UUID!) @auth(level: USER_EMAIL_VERIFIED) {
+  revisions(
+    where: { articleId: { eq: $articleId } }
+    orderBy: [{ savedAt: DESC }]
+  ) {
+    id
+    savedAt
+    savedBy { id email }
+  }
+}
+
 # NOTE: SearchWiki (vector similarity) is intentionally absent from this
 # client connector. The Vector input type cannot be serialised by the client
 # SDK. Similarity search is performed server-side inside the Cloud Function

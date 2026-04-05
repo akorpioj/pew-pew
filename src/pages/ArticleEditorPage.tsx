@@ -5,6 +5,7 @@ import {
   getArticleBySlug,
   getCategoryTree,
   upsertArticle,
+  createRevision,
 } from "@dataconnect/generated";
 import type {
   GetArticleBySlugData,
@@ -151,6 +152,13 @@ export default function ArticleEditorPage() {
       embedArticleCallable({ articleId, content }).catch((err) =>
         console.warn("embedArticle failed (non-blocking):", err)
       );
+
+      // B28: snapshot a Revision whenever the article is published.
+      if (isPublished) {
+        createRevision(dataConnect, { articleId, content }).catch((err) =>
+          console.warn("createRevision failed (non-blocking):", err)
+        );
+      }
 
       navigate(`/wiki/article/${finalSlug}`);
     } catch (err: unknown) {

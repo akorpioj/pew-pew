@@ -13,6 +13,15 @@ type Category @table {
   description: String
 }
 
+# Revision Table (immutable snapshot of Article content at publish time)
+type Revision @table {
+  id: UUID! @default(expr: "uuidV4()")
+  article: Article!
+  content: Any!          # snapshot of BlockNote JSON at the moment of publishing
+  savedAt: Timestamp! @default(expr: "request.time")
+  savedBy: User!
+}
+
 # Article Table
 type Article @table {
   id: UUID! @default(expr: "uuidV4()")

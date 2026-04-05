@@ -1,5 +1,39 @@
 extend type Article {
   """
+  ✨ List `Revision` objects in a one-to-many relationship (where `Revision`.`article` is this object).
+  """
+  revisions_on_article(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Revision_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Revision_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Revision_Having
+  ): [Revision!]! @fdc_generated(from: "Revision.article", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
   Implicit metadata field that cannot be written. It provides extra information about query results.
   """
   _metadata: _Metadata @fdc_generated(from: "Article", purpose: METADATA_FIELD)
@@ -227,6 +261,81 @@ extend type Category {
   """
   _id: ID! @fdc_generated(from: "Category.id", purpose: ENTITY_ID)
 }
+extend type Revision {
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "Revision", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `Revision` table.
+  """
+  _count: Int! @fdc_generated(from: "Revision.", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Revision` table where the `articleId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  articleId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Revision.articleId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Revision` table where the `content` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  content_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Revision.content", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Revision` table where the `id` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  id_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Revision.id", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Revision` table where the `savedAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  savedAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Revision.savedAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Revision` table where the `savedById` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  savedById_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Revision.savedById", purpose: QUERY_COUNT)
+  """
+  ✨ Minimum of the `content` field in the `Revision` table.
+  """
+  content_min: Any @fdc_generated(from: "Revision.content", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `savedAt` field in the `Revision` table.
+  """
+  savedAt_min: Timestamp @fdc_generated(from: "Revision.savedAt", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `content` field in the `Revision` table.
+  """
+  content_max: Any @fdc_generated(from: "Revision.content", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `savedAt` field in the `Revision` table.
+  """
+  savedAt_max: Timestamp @fdc_generated(from: "Revision.savedAt", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "Revision.id", purpose: ENTITY_ID)
+}
 extend type User {
   """
   ✨ List `Article` objects in a one-to-many relationship (where `Article`.`author` is this object).
@@ -262,6 +371,40 @@ extend type User {
     """
     having: Article_Having
   ): [Article!]! @fdc_generated(from: "Article.author", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  ✨ List `Revision` objects in a one-to-many relationship (where `Revision`.`savedBy` is this object).
+  """
+  revisions_on_savedBy(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Revision_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Revision_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Revision_Having
+  ): [Revision!]! @fdc_generated(from: "Revision.savedBy", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
   """
   Implicit metadata field that cannot be written. It provides extra information about query results.
   """

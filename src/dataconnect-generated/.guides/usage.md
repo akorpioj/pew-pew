@@ -14,7 +14,7 @@ If a user is not using a supported framework, they can use the generated SDK dir
 Here's an example of how to use it with the first 5 operations:
 
 ```js
-import { upsertArticle, updateArticle, deleteArticle, upsertCategory, deleteCategory, upsertUser, getCategoryTree, getArticlesByCategory, getArticleBySlug } from '@dataconnect/generated';
+import { upsertArticle, updateArticle, deleteArticle, createRevision, upsertCategory, deleteCategory, upsertUser, getCategoryTree, getArticlesByCategory, getArticleBySlug } from '@dataconnect/generated';
 
 
 // Operation UpsertArticle:  For variables, look at type UpsertArticleVars in ../index.d.ts
@@ -25,6 +25,9 @@ const { data } = await UpdateArticle(dataConnect, updateArticleVars);
 
 // Operation DeleteArticle:  For variables, look at type DeleteArticleVars in ../index.d.ts
 const { data } = await DeleteArticle(dataConnect, deleteArticleVars);
+
+// Operation CreateRevision:  For variables, look at type CreateRevisionVars in ../index.d.ts
+const { data } = await CreateRevision(dataConnect, createRevisionVars);
 
 // Operation UpsertCategory:  For variables, look at type UpsertCategoryVars in ../index.d.ts
 const { data } = await UpsertCategory(dataConnect, upsertCategoryVars);

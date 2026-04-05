@@ -41,6 +41,18 @@ export function deleteArticle(dcOrVars, vars) {
   return executeMutation(deleteArticleRef(dcInstance, inputVars));
 }
 
+export const createRevisionRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'CreateRevision', inputVars);
+}
+createRevisionRef.operationName = 'CreateRevision';
+
+export function createRevision(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(createRevisionRef(dcInstance, inputVars));
+}
+
 export const upsertCategoryRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
@@ -114,5 +126,18 @@ export function getArticleBySlug(dcOrVars, varsOrOptions, options) {
   
   const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, true);
   return executeQuery(getArticleBySlugRef(dcInstance, inputVars), inputOpts && inputOpts.fetchPolicy);
+}
+
+export const getRevisionsByArticleRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetRevisionsByArticle', inputVars);
+}
+getRevisionsByArticleRef.operationName = 'GetRevisionsByArticle';
+
+export function getRevisionsByArticle(dcOrVars, varsOrOptions, options) {
+  
+  const { dc: dcInstance, vars: inputVars, options: inputOpts } = validateArgsWithOptions(connectorConfig, dcOrVars, varsOrOptions, options, true, true);
+  return executeQuery(getRevisionsByArticleRef(dcInstance, inputVars), inputOpts && inputOpts.fetchPolicy);
 }
 

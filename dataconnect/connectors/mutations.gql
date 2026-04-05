@@ -58,6 +58,21 @@ mutation DeleteArticle($id: UUID!)
   article_delete(id: $id)
 }
 
+# ── Revision mutations ──────────────────────────────────────────────────────
+
+# Snapshot article content when published. Restricted to EXPERT and ADMIN.
+# Fire-and-forget from ArticleEditorPage after a successful save with isPublished: true.
+mutation CreateRevision(
+  $articleId: UUID!
+  $content: Any!
+) @auth(expr: "auth.token.role == 'EXPERT' || auth.token.role == 'ADMIN'") {
+  revision_insert(data: {
+    articleId: $articleId
+    content: $content
+    savedById_expr: "auth.uid"
+  })
+}
+
 # ── Category mutations ───────────────────────────────────────────────────────
 
 # Create or update a Category. ADMIN only.

@@ -20,6 +20,15 @@ export interface Category_Key {
   __typename?: 'Category_Key';
 }
 
+export interface CreateRevisionData {
+  revision_insert: Revision_Key;
+}
+
+export interface CreateRevisionVariables {
+  articleId: UUIDString;
+  content: unknown;
+}
+
 export interface DeleteArticleData {
   article_delete?: Article_Key | null;
 }
@@ -98,6 +107,26 @@ export interface GetCategoryTreeData {
       } & Category_Key)[];
     } & Category_Key)[];
   } & Category_Key)[];
+}
+
+export interface GetRevisionsByArticleData {
+  revisions: ({
+    id: UUIDString;
+    savedAt: TimestampString;
+    savedBy: {
+      id: string;
+      email: string;
+    } & User_Key;
+  } & Revision_Key)[];
+}
+
+export interface GetRevisionsByArticleVariables {
+  articleId: UUIDString;
+}
+
+export interface Revision_Key {
+  id: UUIDString;
+  __typename?: 'Revision_Key';
 }
 
 export interface UpdateArticleData {
@@ -186,6 +215,18 @@ export const deleteArticleRef: DeleteArticleRef;
 export function deleteArticle(vars: DeleteArticleVariables): MutationPromise<DeleteArticleData, DeleteArticleVariables>;
 export function deleteArticle(dc: DataConnect, vars: DeleteArticleVariables): MutationPromise<DeleteArticleData, DeleteArticleVariables>;
 
+interface CreateRevisionRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreateRevisionVariables): MutationRef<CreateRevisionData, CreateRevisionVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: CreateRevisionVariables): MutationRef<CreateRevisionData, CreateRevisionVariables>;
+  operationName: string;
+}
+export const createRevisionRef: CreateRevisionRef;
+
+export function createRevision(vars: CreateRevisionVariables): MutationPromise<CreateRevisionData, CreateRevisionVariables>;
+export function createRevision(dc: DataConnect, vars: CreateRevisionVariables): MutationPromise<CreateRevisionData, CreateRevisionVariables>;
+
 interface UpsertCategoryRef {
   /* Allow users to create refs without passing in DataConnect */
   (vars: UpsertCategoryVariables): MutationRef<UpsertCategoryData, UpsertCategoryVariables>;
@@ -257,4 +298,16 @@ export const getArticleBySlugRef: GetArticleBySlugRef;
 
 export function getArticleBySlug(vars: GetArticleBySlugVariables, options?: ExecuteQueryOptions): QueryPromise<GetArticleBySlugData, GetArticleBySlugVariables>;
 export function getArticleBySlug(dc: DataConnect, vars: GetArticleBySlugVariables, options?: ExecuteQueryOptions): QueryPromise<GetArticleBySlugData, GetArticleBySlugVariables>;
+
+interface GetRevisionsByArticleRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetRevisionsByArticleVariables): QueryRef<GetRevisionsByArticleData, GetRevisionsByArticleVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetRevisionsByArticleVariables): QueryRef<GetRevisionsByArticleData, GetRevisionsByArticleVariables>;
+  operationName: string;
+}
+export const getRevisionsByArticleRef: GetRevisionsByArticleRef;
+
+export function getRevisionsByArticle(vars: GetRevisionsByArticleVariables, options?: ExecuteQueryOptions): QueryPromise<GetRevisionsByArticleData, GetRevisionsByArticleVariables>;
+export function getRevisionsByArticle(dc: DataConnect, vars: GetRevisionsByArticleVariables, options?: ExecuteQueryOptions): QueryPromise<GetRevisionsByArticleData, GetRevisionsByArticleVariables>;
 

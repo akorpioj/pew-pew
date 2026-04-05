@@ -18,6 +18,15 @@ extend type Mutation {
     data: Category_Data!
   ): Category_KeyOutput! @fdc_generated(from: "Category", purpose: INSERT_SINGLE)
   """
+  ✨ Insert a single `Revision` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  revision_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Revision_Data!
+  ): Revision_KeyOutput! @fdc_generated(from: "Revision", purpose: INSERT_SINGLE)
+  """
   ✨ Insert a single `User` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
   """
   user_insert(
@@ -44,6 +53,15 @@ extend type Mutation {
     """
     data: [Category_Data!]!
   ): [Category_KeyOutput!]! @fdc_generated(from: "Category", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Revision` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  revision_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Revision_Data!]!
+  ): [Revision_KeyOutput!]! @fdc_generated(from: "Revision", purpose: INSERT_MULTIPLE)
   """
   ✨ Insert `User` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
   """
@@ -72,6 +90,15 @@ extend type Mutation {
     data: Category_Data!
   ): Category_KeyOutput! @fdc_generated(from: "Category", purpose: UPSERT_SINGLE)
   """
+  ✨ Insert or update a single `Revision` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Revision`.
+  """
+  revision_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Revision_Data!
+  ): Revision_KeyOutput! @fdc_generated(from: "Revision", purpose: UPSERT_SINGLE)
+  """
   ✨ Insert or update a single `User` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `User`.
   """
   user_upsert(
@@ -98,6 +125,15 @@ extend type Mutation {
     """
     data: [Category_Data!]!
   ): [Category_KeyOutput!]! @fdc_generated(from: "Category", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Revision` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Revision`.
+  """
+  revision_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Revision_Data!]!
+  ): [Revision_KeyOutput!]! @fdc_generated(from: "Revision", purpose: UPSERT_MULTIPLE)
   """
   ✨ Insert or update `User` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `User`.
   """
@@ -155,6 +191,30 @@ extend type Mutation {
     """
     data: Category_Data!
   ): Category_KeyOutput @fdc_generated(from: "Category", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Revision` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Revision` or `null` if not found.
+  """
+  revision_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Revision_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Revision_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Revision_Data!
+  ): Revision_KeyOutput @fdc_generated(from: "Revision", purpose: UPDATE_SINGLE)
   """
   ✨ Update a single `User` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `User` or `null` if not found.
   """
@@ -223,6 +283,25 @@ extend type Mutation {
     data: Category_Data!
   ): Int! @fdc_generated(from: "Category", purpose: UPDATE_MULTIPLE)
   """
+  ✨ Update `Revision` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  revision_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Revision_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Revision_Data!
+  ): Int! @fdc_generated(from: "Revision", purpose: UPDATE_MULTIPLE)
+  """
   ✨ Update `User` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
   """
   user_updateMany(
@@ -280,6 +359,25 @@ extend type Mutation {
     first: Category_FirstRow
   ): Category_KeyOutput @fdc_generated(from: "Category", purpose: DELETE_SINGLE)
   """
+  ✨ Delete a single `Revision` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  revision_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Revision_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Revision_FirstRow
+  ): Revision_KeyOutput @fdc_generated(from: "Revision", purpose: DELETE_SINGLE)
+  """
   ✨ Delete a single `User` based on `id`, `key` or `first` and return its key (or `null` if not found).
   """
   user_delete(
@@ -331,6 +429,20 @@ extend type Mutation {
     """
     all: Boolean = false
   ): Int! @fdc_generated(from: "Category", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Revision` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  revision_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Revision_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Revision", purpose: DELETE_MULTIPLE)
   """
   ✨ Delete `User` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
   """

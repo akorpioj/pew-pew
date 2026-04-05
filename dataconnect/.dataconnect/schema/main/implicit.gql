@@ -14,3 +14,13 @@ extend type Category {
   """
   parentId: UUID @fdc_generated(from: "Category.parent", purpose: IMPLICIT_REF_FIELD)
 }
+extend type Revision {
+  """
+  ✨ Implicit foreign key field based on `Revision`.`article`. It must match the value of `Article`.`id`. See `@ref` for how to customize it.
+  """
+  articleId: UUID! @fdc_generated(from: "Revision.article", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `Revision`.`savedBy`. It must match the value of `User`.`id`. See `@ref` for how to customize it.
+  """
+  savedById: String! @fdc_generated(from: "Revision.savedBy", purpose: IMPLICIT_REF_FIELD)
+}

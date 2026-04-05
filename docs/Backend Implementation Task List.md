@@ -149,7 +149,7 @@ npx firebase-tools@latest auth:export users.json --project pew-bab23 Get-Content
 
 The Architecture doc specifies an immutable Revisions log but it is absent from the current schema.
 
-- [ ] **B27:** Add `Revision` table to `schema.gql`:
+- [X] **B27:** Add `Revision` table to `schema.gql`:
   ```graphql
   type Revision @table {
     id: UUID! @default(expr: "uuidV4()")
@@ -159,8 +159,8 @@ The Architecture doc specifies an immutable Revisions log but it is absent from 
     savedBy: User!
   }
   ```
-- [ ] **B28:** Add `CreateRevision` mutation restricted to EXPERT/ADMIN; call it from the `embedArticle` flow (or `ArticleEditorPage`) each time `isPublished: true`
-- [ ] **B29:** Add `GetRevisionsByArticle($articleId: UUID!)` query
+- [X] **B28:** Add `CreateRevision` mutation restricted to EXPERT/ADMIN; call it from the `embedArticle` flow (or `ArticleEditorPage`) each time `isPublished: true`
+- [X] **B29:** Add `GetRevisionsByArticle($articleId: UUID!)` query
 - [ ] **B30:** Implement a "Version History" slide-out Sheet in the article editor (optional — deferred to after core AI is working)
 
 ---
