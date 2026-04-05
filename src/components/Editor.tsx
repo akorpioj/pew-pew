@@ -1,8 +1,8 @@
 import { forwardRef, useImperativeHandle } from "react";
 import { useCreateBlockNote } from "@blocknote/react";
-import { BlockNoteViewRaw } from "@blocknote/react";
+import { BlockNoteView } from "@blocknote/shadcn";
 import type { Block } from "@blocknote/core";
-import "@blocknote/react/style.css";
+import "@blocknote/shadcn/style.css";
 
 export interface EditorHandle {
   getContent: () => Block[];
@@ -23,7 +23,9 @@ const Editor = forwardRef<EditorHandle, EditorProps>(
       getContent: () => editor.document as Block[],
     }));
 
-    return <BlockNoteViewRaw editor={editor} editable={editable} />;
+    return (
+      <BlockNoteView editor={editor} editable={editable} />
+    );
   }
 );
 
