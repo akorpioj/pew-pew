@@ -1,9 +1,9 @@
-# Insert or update an Article.
+# ── Article mutations ──────────────────────────────────────────────────────
+
+# Insert or upsert an Article. Restricted to EXPERT and ADMIN roles.
 # - To CREATE: omit `id` — a new UUID is auto-generated.
-# - To UPDATE: pass the existing `id` to overwrite the record.
-# `authorId` is always set to the currently authenticated user.
-# Note: `embedding` is intentionally excluded here; it is populated
-# by the Genkit embedding flow (Phase 4) after the article is saved.
+# - To UPDATE as ADMIN (any article): pass the existing `id`.
+# Note: `embedding` is excluded — populated by the Genkit embedArticle flow.
 mutation UpsertArticle(
   $id: UUID
   $title: String!
@@ -11,7 +11,7 @@ mutation UpsertArticle(
   $content: Any!
   $categoryId: UUID!
   $isPublished: Boolean
-) @auth(level: USER) {
+) @auth(expr: "auth.token.role == 'EXPERT' || auth.token.role == 'ADMIN'") {
   article_upsert(
     data: {
       id: $id
@@ -23,4 +23,75 @@ mutation UpsertArticle(
       isPublished: $isPublished
     }
   )
+}
+
+# Update an existing Article — ownership enforced via where clause.
+# Experts can only update articles they authored (authorId must match auth.uid).
+# Admins with ownership of the article can also use this; for editing any
+# article as ADMIN regardless of authorship, use UpsertArticle.
+mutation UpdateArticle(
+  $id: UUID!
+  $title: String!
+  $slug: String!
+  $content: Any!
+  $categoryId: UUID!
+  $isPublished: Boolean
+) @auth(expr: "auth.token.role == 'EXPERT' || auth.token.role == 'ADMIN'") {
+  article_update(
+    first: { where: {
+      id: { eq: $id }
+      authorId: { eq_expr: "auth.uid" }
+    }}
+    data: {
+      title: $title
+      slug: $slug
+      content: $content
+      categoryId: $categoryId
+      isPublished: $isPublished
+    }
+  )
+}
+
+# Delete an Article by ID. ADMIN only.
+mutation DeleteArticle($id: UUID!)
+@auth(expr: "auth.token.role == 'ADMIN'") {
+  article_delete(id: $id)
+}
+
+# ── Category mutations ───────────────────────────────────────────────────────
+
+# Create or update a Category. ADMIN only.
+mutation UpsertCategory(
+  $id: UUID
+  $name: String!
+  $description: String
+  $parentId: UUID
+) @auth(expr: "auth.token.role == 'ADMIN'") {
+  category_upsert(
+    data: {
+      id: $id
+      name: $name
+      description: $description
+      parentId: $parentId
+    }
+  )
+}
+
+# Delete a Category by ID. ADMIN only.
+mutation DeleteCategory($id: UUID!)
+@auth(expr: "auth.token.role == 'ADMIN'") {
+  category_delete(id: $id)
+}
+
+# ── User mutations ───────────────────────────────────────────────────────────
+
+# Upsert the calling user's own User row (first-login sync fallback).
+# The syncUserOnSignup Auth trigger handles this automatically on creation;
+# this mutation is a client-side fallback for pre-existing accounts.
+mutation UpsertUser($email: String!) @auth(level: USER) {
+  user_upsert(data: {
+    id_expr: "auth.uid"
+    email: $email
+    role: "VIEWER"
+  })
 }

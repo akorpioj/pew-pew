@@ -21,6 +21,76 @@ exports.upsertArticle = function upsertArticle(dcOrVars, vars) {
 }
 ;
 
+const updateArticleRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'UpdateArticle', inputVars);
+}
+updateArticleRef.operationName = 'UpdateArticle';
+exports.updateArticleRef = updateArticleRef;
+
+exports.updateArticle = function updateArticle(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(updateArticleRef(dcInstance, inputVars));
+}
+;
+
+const deleteArticleRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'DeleteArticle', inputVars);
+}
+deleteArticleRef.operationName = 'DeleteArticle';
+exports.deleteArticleRef = deleteArticleRef;
+
+exports.deleteArticle = function deleteArticle(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(deleteArticleRef(dcInstance, inputVars));
+}
+;
+
+const upsertCategoryRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'UpsertCategory', inputVars);
+}
+upsertCategoryRef.operationName = 'UpsertCategory';
+exports.upsertCategoryRef = upsertCategoryRef;
+
+exports.upsertCategory = function upsertCategory(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(upsertCategoryRef(dcInstance, inputVars));
+}
+;
+
+const deleteCategoryRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'DeleteCategory', inputVars);
+}
+deleteCategoryRef.operationName = 'DeleteCategory';
+exports.deleteCategoryRef = deleteCategoryRef;
+
+exports.deleteCategory = function deleteCategory(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(deleteCategoryRef(dcInstance, inputVars));
+}
+;
+
+const upsertUserRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'UpsertUser', inputVars);
+}
+upsertUserRef.operationName = 'UpsertUser';
+exports.upsertUserRef = upsertUserRef;
+
+exports.upsertUser = function upsertUser(dcOrVars, vars) {
+  const { dc: dcInstance, vars: inputVars } = validateArgs(connectorConfig, dcOrVars, vars, true);
+  return executeMutation(upsertUserRef(dcInstance, inputVars));
+}
+;
+
 const getCategoryTreeRef = (dc) => {
   const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
   dcInstance._useGeneratedSdk();

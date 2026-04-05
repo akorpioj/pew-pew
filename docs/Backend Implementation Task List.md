@@ -32,7 +32,7 @@ The SDD specifies per-role expressions that are still missing.
 
 ### 4.2 Genkit embedding flow (Vector Ingestion)
 
-The `contentEmbedding` column in the `Article` table is currently never populated — the UpsertArticle
+The `embedding` column in the `Article` table is currently never populated — the UpsertArticle
 mutation explicitly omits it. This flow provides the "write path" for embeddings.
 
 - [ ] **B9:** Create a `functions/` directory and initialize a Node.js/TypeScript Firebase Functions project:
@@ -63,13 +63,13 @@ mutation explicitly omits it. This flow provides the "write path" for embeddings
 
 ### 4.3 Data Connect: Similarity Search query
 
-- [ ] **B15:** Add `embedding` field to the `Article` table (rename `contentEmbedding` → `embedding` for consistency with the SDD, or keep `contentEmbedding` and document the mismatch):
-  > **Note:** The current `schema.gql` has the field named `embedding`; the generated SDK uses `contentEmbedding`. Reconcile and re-generate.
+- [ ] **B15:** Add `embedding` field to the `Article` table:
+  > **Note:** The current `schema.gql` has the field named `embedding`; the generated SDK uses `contentEmbedding`. Re-generate.
 - [ ] **B16:** Add `SearchWiki` query to `queries.gql` using pgvector cosine similarity:
   ```graphql
   query SearchWiki($vector: Vector!) @auth(level: USER) {
     articles_similaritySearch(
-      compare: { field: contentEmbedding, vector: $vector }
+      compare: { field: embedding, vector: $vector }
       limit: 3
       where: { isPublished: { eq: true } }
     ) {
