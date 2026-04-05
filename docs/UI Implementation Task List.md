@@ -52,14 +52,14 @@ const result = await getCategoryTree(dataConnect);
 ---
 
 ### Article List
-- [ ] **T13:** Create `src/pages/ArticleListPage.tsx` — calls `useGetArticlesByCategory($categoryId)`, renders articles as Shadcn `Card` grid
-- [ ] **T14:** Show `Skeleton` cards while loading
+- [X] **T13:** Create `src/pages/ArticleListPage.tsx` — calls `useGetArticlesByCategory($categoryId)`, renders articles as Shadcn `Card` grid
+- [X] **T14:** Show `Skeleton` cards while loading
 
 ---
 
 ### Article View
-- [ ] **T15:** Create `src/pages/ArticleViewPage.tsx` — calls `useGetArticleBySlug($slug)`, renders BlockNote in read-only mode (`editable={false}`)
-- [ ] **T16:** Show article metadata (author, date, category breadcrumb) above the editor
+- [X] **T15:** Create `src/pages/ArticleViewPage.tsx` — calls `useGetArticleBySlug($slug)`, renders BlockNote in read-only mode (`editable={false}`)
+- [X] **T16:** Show article metadata (author, date, category breadcrumb) above the editor
 
 ---
 
