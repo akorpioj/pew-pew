@@ -9,16 +9,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { askWikiCallable } from "@/lib/functions";
 
 interface Message {
   role: "user" | "assistant";
   text: string;
-}
-
-// T23: stub — replace with real Genkit call in Phase 4
-async function queryAi(_input: string): Promise<string> {
-  await new Promise((r) => setTimeout(r, 400)); // simulate latency
-  return "AI coming soon";
 }
 
 export default function AiAssistantSheet() {
@@ -43,8 +38,8 @@ export default function AiAssistantSheet() {
     setLoading(true);
 
     try {
-      const response = await queryAi(query);
-      setMessages((prev) => [...prev, { role: "assistant", text: response }]);
+      const result = await askWikiCallable({ question: query });
+      setMessages((prev) => [...prev, { role: "assistant", text: result.data.answer }]);
     } catch {
       setMessages((prev) => [
         ...prev,

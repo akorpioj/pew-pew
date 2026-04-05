@@ -63,9 +63,9 @@ mutation explicitly omits it. This flow provides the "write path" for embeddings
 
 ### 4.3 Data Connect: Similarity Search query
 
-- [ ] **B15:** Add `embedding` field to the `Article` table:
+- [X] **B15:** Add `embedding` field to the `Article` table:
   > **Note:** The current `schema.gql` has the field named `embedding`; the generated SDK uses `contentEmbedding`. Re-generate.
-- [ ] **B16:** Add `SearchWiki` query to `queries.gql` using pgvector cosine similarity:
+- [X] **B16:** Add `SearchWiki` query to `queries.gql` using pgvector cosine similarity:
   ```graphql
   query SearchWiki($vector: Vector!) @auth(level: USER) {
     articles_similaritySearch(
@@ -80,8 +80,8 @@ mutation explicitly omits it. This flow provides the "write path" for embeddings
     }
   }
   ```
-- [ ] **B17:** Re-run `firebase dataconnect:sdk:generate` to get the `searchWiki(dc, vars)` function
-- [ ] **B18:** Wire `SearchWiki` into `AiAssistantSheet.tsx`:
+- [X] **B17:** Re-run `firebase dataconnect:sdk:generate` to get the `searchWiki(dc, vars)` function
+- [X] **B18:** Wire `SearchWiki` into `AiAssistantSheet.tsx`:
   1. Vectorize the user query via the `embedArticle` function (or a dedicated `embedQuery` callable)
   2. Call `searchWiki(dataConnect, { vector })` to retrieve top-3 articles
   3. Send retrieved content as context to the Gemini API call (replaces the `"AI coming soon"` stub)
@@ -122,7 +122,7 @@ Without custom claims set, the JWT `auth.token.role` expression in @auth directi
 3. Run: npx ts-node --project tsconfig.json scripts/bootstrap-admin.ts <your-uid>
 Get your uid (localId):
 npx firebase-tools@latest auth:export users.json --project pew-bab23 Get-Content users.json | Select-String "localId|email"
-- [ ] **B22:** Create `functions/src/syncUserOnSignup.ts` — an `onDocumentCreated` or `beforeUserCreated` Auth trigger that:
+- [X] **B22:** Create `functions/src/syncUserOnSignup.ts` — an `onDocumentCreated` or `beforeUserCreated` Auth trigger that:
   1. Sets the default claim `{ role: 'VIEWER' }` for every new sign-up
   2. Upserts a `User` row in Data Connect (so the FK from Article → User is always satisfiable)
 - [X] **B23:** Document the one-time bootstrap command to make yourself ADMIN:

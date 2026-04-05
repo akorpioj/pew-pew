@@ -12,3 +12,13 @@ export const embedArticleCallable = httpsCallable<
   { articleId: string; content: unknown[] },
   void
 >(functions, "embedArticle");
+
+/**
+ * HTTPS-callable reference to the `askWiki` Cloud Function.
+ * Full RAG pipeline: embeds the question, searches the wiki, and returns
+ * a Gemini-generated answer grounded in the top-3 matching articles.
+ */
+export const askWikiCallable = httpsCallable<
+  { question: string },
+  { answer: string }
+>(functions, "askWiki");
