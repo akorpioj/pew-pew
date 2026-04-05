@@ -35,7 +35,7 @@ The SDD specifies per-role expressions that are still missing.
 The `embedding` column in the `Article` table is currently never populated — the UpsertArticle
 mutation explicitly omits it. This flow provides the "write path" for embeddings.
 
-- [ ] **B9:** Create a `functions/` directory and initialize a Node.js/TypeScript Firebase Functions project:
+- [X] **B9:** Create a `functions/` directory and initialize a Node.js/TypeScript Firebase Functions project:
   ```powershell
   mkdir functions
   cd functions
@@ -43,21 +43,21 @@ mutation explicitly omits it. This flow provides the "write path" for embeddings
   npm install -D typescript ts-node
   npm install firebase-admin firebase-functions @genkit-ai/firebase @genkit-ai/googleai genkit
   ```
-- [ ] **B10:** Create `functions/src/index.ts` exporting a `Firestore`-triggered or HTTPS-callable Genkit flow `embedArticle`:
+- [X] **B10:** Create `functions/src/index.ts` exporting a `Firestore`-triggered or HTTPS-callable Genkit flow `embedArticle`:
   1. Accept `{ articleId: string, content: Block[] }` as input
   2. Flatten BlockNote JSON blocks to plain text (recursive walk over `block.content[].text`)
   3. Call `embed()` with `googleai/text-embedding-004` (768-dimension, replacing deprecated `textEmbeddingGecko`)
   4. Write the resulting vector back to the Article row via the Data Connect Admin SDK or a direct Cloud SQL update
-- [ ] **B11:** Create `functions/src/flattenBlocks.ts` utility — given a `Block[]`, return a plain `string` (strip formatting, concatenate text runs, handle nested blocks)
-- [ ] **B12:** Wire `embedArticle` to trigger automatically after `UpsertArticle` succeeds:
+- [X] **B11:** Create `functions/src/flattenBlocks.ts` utility — given a `Block[]`, return a plain `string` (strip formatting, concatenate text runs, handle nested blocks)
+- [X] **B12:** Wire `embedArticle` to trigger automatically after `UpsertArticle` succeeds:
   - Option A (recommended): Make it an HTTPS-callable function; call it from the React `handleSave` in `ArticleEditorPage` after the upsert resolves
   - Option B: Use a Firestore document write as a trigger (requires mirroring Data Connect writes to Firestore — more complex)
-- [ ] **B13:** Update `ArticleEditorPage.tsx` to call the `embedArticle` function after a successful save (if Option A chosen in B12):
+- [X] **B13:** Update `ArticleEditorPage.tsx` to call the `embedArticle` function after a successful save (if Option A chosen in B12):
   ```ts
   const embedArticle = httpsCallable(functions, "embedArticle");
   await embedArticle({ articleId: result.data.article_upsert.id, content });
   ```
-- [ ] **B14:** Add `functions/tsconfig.json`, `.eslintrc.js`, and update root `firebase.json` to include `"functions": { "source": "functions" }`
+- [X] **B14:** Add `functions/tsconfig.json`, `.eslintrc.js`, and update root `firebase.json` to include `"functions": { "source": "functions" }`
 
 ---
 

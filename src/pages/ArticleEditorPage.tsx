@@ -11,6 +11,7 @@ import type {
   GetCategoryTreeData,
 } from "@dataconnect/generated";
 import dataConnect from "@/lib/dataconnect";
+import { embedArticleCallable } from "@/lib/functions";
 import Editor, { type EditorHandle } from "@/components/Editor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -141,9 +142,17 @@ export default function ArticleEditorPage() {
         categoryId,
         isPublished,
       });
+
+      const articleId = result.data.article_upsert.id as string;
+
+      // B12/B13: kick off embedding fire-and-forget so the user isn't blocked.
+      // If the embedding fails, the article is still saved; the vector column
+      // will just be null until the next save triggers it again.
+      embedArticleCallable({ articleId, content }).catch((err) =>
+        console.warn("embedArticle failed (non-blocking):", err)
+      );
+
       navigate(`/wiki/article/${finalSlug}`);
-      // consume result to satisfy linter
-      void result;
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Failed to save article.";
       setError(msg);
