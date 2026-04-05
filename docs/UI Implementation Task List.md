@@ -26,9 +26,9 @@ const result = await getCategoryTree(dataConnect);
 ---
 
 ### Authentication
-- [ ] **T5:** Create `src/contexts/AuthContext.tsx` — `onAuthStateChanged` listener, exposes `user`, `signIn`, `signOut`
-- [ ] **T6:** Create `src/pages/LoginPage.tsx` — Google sign-in button (using Shadcn `Button`), redirects on success
-- [ ] **T7:** Create `src/components/ProtectedRoute.tsx` — redirects to `/login` if `user` is null
+- [X] **T5:** Create `src/contexts/AuthContext.tsx` — `onAuthStateChanged` listener, exposes `user`, `signIn`, `signOut`
+- [X] **T6:** Create `src/pages/LoginPage.tsx` — Google sign-in button (using Shadcn `Button`), redirects on success
+- [X] **T7:** Create `src/components/ProtectedRoute.tsx` — redirects to `/login` if `user` is null
 
 ---
 
