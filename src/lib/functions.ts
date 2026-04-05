@@ -1,8 +1,13 @@
-import { getFunctions, httpsCallable } from "firebase/functions";
+import { getFunctions, httpsCallable, connectFunctionsEmulator } from "firebase/functions";
 import app from "./firebase";
 
 const functions = getFunctions(app, "europe-north1");
 
+// Point at the local emulator when running in development.
+// The Functions emulator port is set to 5001 in firebase.json.
+if (import.meta.env.DEV) {
+  connectFunctionsEmulator(functions, "localhost", 5001);
+}
 /**
  * HTTPS-callable reference to the `embedArticle` Cloud Function.
  * Called fire-and-forget after a successful UpsertArticle to populate
