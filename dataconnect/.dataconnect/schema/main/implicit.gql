@@ -1,0 +1,16 @@
+extend type Article {
+  """
+  ✨ Implicit foreign key field based on `Article`.`author`. It must match the value of `User`.`id`. See `@ref` for how to customize it.
+  """
+  authorId: String! @fdc_generated(from: "Article.author", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `Article`.`category`. It must match the value of `Category`.`id`. See `@ref` for how to customize it.
+  """
+  categoryId: UUID! @fdc_generated(from: "Article.category", purpose: IMPLICIT_REF_FIELD)
+}
+extend type Category {
+  """
+  ✨ Implicit foreign key field based on `Category`.`parent`. It must match the value of `Category`.`id`. See `@ref` for how to customize it.
+  """
+  parentId: UUID @fdc_generated(from: "Category.parent", purpose: IMPLICIT_REF_FIELD)
+}
