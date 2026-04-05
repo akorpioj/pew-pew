@@ -1,0 +1,12 @@
+.venv
+node_modules
+pglite-debug.log
+# Firebase
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
+firebaseconfig.js
+ui-debug.log
+
+
+

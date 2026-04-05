@@ -1,0 +1,26 @@
+# Insert or update an Article.
+# - To CREATE: omit `id` — a new UUID is auto-generated.
+# - To UPDATE: pass the existing `id` to overwrite the record.
+# `authorId` is always set to the currently authenticated user.
+# Note: `embedding` is intentionally excluded here; it is populated
+# by the Genkit embedding flow (Phase 4) after the article is saved.
+mutation UpsertArticle(
+  $id: UUID
+  $title: String!
+  $slug: String!
+  $content: Any!
+  $categoryId: UUID!
+  $isPublished: Boolean
+) @auth(level: USER) {
+  article_upsert(
+    data: {
+      id: $id
+      title: $title
+      slug: $slug
+      content: $content
+      categoryId: $categoryId
+      authorId_expr: "auth.uid"
+      isPublished: $isPublished
+    }
+  )
+}

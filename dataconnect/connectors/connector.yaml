@@ -1,0 +1,10 @@
+connectorId: pew-pew-connector
+displayName: Pew Pew Connector
+description: A connector that does pew pew things.
+generate:
+  javascriptSdk:
+    - outputDir: ..\..\src\dataconnect-generated
+      package: "@dataconnect/generated"
+      packageJsonDir: ..\..
+      react: false
+      angular: false

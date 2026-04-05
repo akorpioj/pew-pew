@@ -1,0 +1,56 @@
+# Fetch the full category tree, starting from root categories (no parent).
+# Returns up to 4 levels deep. Client reconstructs the tree from nested data.
+query GetCategoryTree @auth(level: USER) {
+  categories(
+    where: { parentId: { isNull: true } }
+    orderBy: [{ name: ASC }]
+  ) {
+    id
+    name
+    description
+    children: categories_on_parent(orderBy: [{ name: ASC }]) {
+      id
+      name
+      description
+      children: categories_on_parent(orderBy: [{ name: ASC }]) {
+        id
+        name
+        description
+        children: categories_on_parent(orderBy: [{ name: ASC }]) {
+          id
+          name
+          description
+        }
+      }
+    }
+  }
+}
+
+# Fetch all articles in a given category (shallow — no subtree).
+query GetArticlesByCategory($categoryId: UUID!) @auth(level: USER) {
+  articles(
+    where: { categoryId: { eq: $categoryId } }
+    orderBy: [{ createdAt: DESC }]
+  ) {
+    id
+    title
+    slug
+    isPublished
+    createdAt
+    author { id email }
+  }
+}
+
+# Fetch a single article by slug, including full content.
+query GetArticleBySlug($slug: String!) @auth(level: USER) {
+  article(first: { where: { slug: { eq: $slug } } }) {
+    id
+    title
+    slug
+    content
+    isPublished
+    createdAt
+    category { id name }
+    author { id email }
+  }
+}

@@ -1,0 +1,27 @@
+# User Table (Sync with Firebase Auth)
+type User @table(key: "id") {
+  id: String! @default(expr: "auth.uid")  # Firebase Auth UID
+  email: String!
+  role: String!                            # ADMIN, EXPERT, VIEWER
+}
+
+# Nested Category Table
+type Category @table {
+  id: UUID! @default(expr: "uuidV4()")
+  name: String!
+  parent: Category              # Self-reference for hierarchy
+  description: String
+}
+
+# Article Table
+type Article @table {
+  id: UUID! @default(expr: "uuidV4()")
+  title: String!
+  slug: String! @unique
+  content: Any!                            # BlockNote JSON array (JSONB)
+  embedding: Vector @col(dataType: "vector", size: 768)  # pgvector for Semantic Search
+  category: Category!
+  author: User!
+  isPublished: Boolean! @default(value: false)
+  createdAt: Timestamp! @default(expr: "request.time")
+}

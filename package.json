@@ -1,0 +1,27 @@
+{
+  "name": "pew-pew",
+  "version": "0.0.1",
+  "description": "Private Expert Wiki",
+  "homepage": "https://github.com/akorpioj/pew-pew#readme",
+  "bugs": {
+    "url": "https://github.com/akorpioj/pew-pew/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akorpioj/pew-pew.git"
+  },
+  "license": "MIT",
+  "author": "Anita Korpioja",
+  "type": "commonjs",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@dataconnect/generated": "file:src/dataconnect-generated",
+    "firebase-tools": "^15.13.0"
+  }
+}
