@@ -31,9 +31,9 @@
   - Generates an email sign-in link (`generateSignInWithEmailLink`) with 72-hour expiry
   - Sends the link via email (Firebase Extensions → Trigger Email, or a direct SendGrid call)
   - Creates the `User` row in Data Connect with role `VIEWER`
-- [ ] On the client, detect a sign-in link in the URL (`isSignInWithEmailLink`); prompt the user to set a password before continuing
-- [ ] Show a friendly error page when an invite link has expired, with a "Request a new invite" CTA
-- [ ] Allow the admin to re-send an invite from the User Management page (re-generates the link without creating a duplicate Auth user)
+- [X] On the client, detect a sign-in link in the URL (`isSignInWithEmailLink`); prompt the user to set a password before continuing
+- [X] Show a friendly error page when an invite link has expired, with a "Request a new invite" CTA
+- [X] Allow the admin to re-send an invite from the User Management page (re-generates the link without creating a duplicate Auth user)
 
 ### UM-4 · Admin User Management Page
 - [ ] Build a `UserManagementPage` (ADMIN only) with a data table showing all `User` rows: name / email, role, status (active / disabled)

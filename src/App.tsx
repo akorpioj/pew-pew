@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "@/pages/LoginPage";
 import RequestAccessPage from "@/pages/RequestAccessPage";
+import AcceptInvitePage from "@/pages/AcceptInvitePage";
 import WikiLayout from "@/layouts/WikiLayout";
 import UserManagementPage from "@/pages/UserManagementPage";
 import AdminRoute from "@/components/AdminRoute";
@@ -20,6 +21,7 @@ export default function App() {
           {/* Public */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/request-access" element={<RequestAccessPage />} />
+          <Route path="/accept-invite" element={<AcceptInvitePage />} />
 
           {/* Redirect root to wiki */}
           <Route path="/" element={<Navigate to="/wiki" replace />} />

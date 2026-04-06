@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   collection,
   onSnapshot,
@@ -8,6 +8,7 @@ import {
 } from "firebase/firestore";
 import { FirebaseError } from "firebase/app";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import firestore, {
   type AccessRequest,
@@ -16,6 +17,7 @@ import firestore, {
 import {
   approveAccessRequestCallable,
   rejectAccessRequestCallable,
+  sendInviteCallable,
 } from "@/lib/functions";
 
 type PendingRequest = AccessRequest & { id: string };
@@ -25,6 +27,15 @@ export default function UserManagementPage() {
   const [loadingData, setLoadingData] = useState(true);
   const [actingOn, setActingOn] = useState<Set<string>>(new Set());
   const [actionError, setActionError] = useState<string | null>(null);
+
+  // ── Re-send / direct invite state ────────────────────────────────────────
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteSending, setInviteSending] = useState(false);
+  const [inviteResult, setInviteResult] = useState<{
+    kind: "success" | "error";
+    message: string;
+  } | null>(null);
+  const inviteInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const q = query(
@@ -89,6 +100,31 @@ export default function UserManagementPage() {
       );
     } finally {
       setActing(req.id, false);
+    }
+  };
+
+  const handleSendInvite = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setInviteResult(null);
+    setInviteSending(true);
+    try {
+      await sendInviteCallable({ email: inviteEmail.trim().toLowerCase() });
+      setInviteResult({
+        kind: "success",
+        message: `Invite sent to ${inviteEmail.trim()}.`,
+      });
+      setInviteEmail("");
+    } catch (err) {
+      setInviteResult({
+        kind: "error",
+        message:
+          err instanceof FirebaseError
+            ? err.message
+            : "Failed to send invite. Please try again.",
+      });
+    } finally {
+      setInviteSending(false);
+      inviteInputRef.current?.focus();
     }
   };
 
@@ -171,6 +207,42 @@ export default function UserManagementPage() {
               );
             })}
           </div>
+        )}
+      </section>
+
+      {/* ── Send / re-send invite ── */}
+      <section>
+        <h2 className="mb-1 text-sm font-medium">Send or re-send an invite</h2>
+        <p className="mb-3 text-xs text-muted-foreground">
+          Re-sending to an existing account generates a fresh link without
+          creating a duplicate user.
+        </p>
+        <form onSubmit={handleSendInvite} className="flex max-w-sm gap-2">
+          <Input
+            ref={inviteInputRef}
+            type="email"
+            placeholder="Email address"
+            autoComplete="off"
+            required
+            value={inviteEmail}
+            onChange={(e) => setInviteEmail(e.target.value)}
+            disabled={inviteSending}
+          />
+          <Button type="submit" disabled={inviteSending}>
+            {inviteSending ? "Sending…" : "Send invite"}
+          </Button>
+        </form>
+        {inviteResult && (
+          <p
+            role={inviteResult.kind === "error" ? "alert" : "status"}
+            className={`mt-2 text-sm ${
+              inviteResult.kind === "error"
+                ? "text-destructive"
+                : "text-muted-foreground"
+            }`}
+          >
+            {inviteResult.message}
+          </p>
         )}
       </section>
     </div>
