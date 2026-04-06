@@ -1,5 +1,5 @@
 import { Outlet, useNavigate } from "react-router-dom";
-import { LogOutIcon, UsersIcon } from "lucide-react";
+import { LogOutIcon, UserIcon, UsersIcon } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -73,16 +73,33 @@ export default function WikiLayout() {
             <span className="truncate text-xs text-muted-foreground group-data-[collapsible=icon]:hidden">
               {user?.email}
             </span>
-            <Tooltip>
-              <TooltipTrigger
-                render={
-                  <Button variant="ghost" size="icon-xs" onClick={signOut} aria-label="Sign out" />
-                }
-              >
-                <LogOutIcon />
-              </TooltipTrigger>
-              <TooltipContent side="right">Sign out</TooltipContent>
-            </Tooltip>
+            <div className="flex items-center gap-1">
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <Button
+                      variant="ghost"
+                      size="icon-xs"
+                      onClick={() => navigate("/profile")}
+                      aria-label="Profile"
+                    />
+                  }
+                >
+                  <UserIcon />
+                </TooltipTrigger>
+                <TooltipContent side="right">Profile</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <Button variant="ghost" size="icon-xs" onClick={signOut} aria-label="Sign out" />
+                  }
+                >
+                  <LogOutIcon />
+                </TooltipTrigger>
+                <TooltipContent side="right">Sign out</TooltipContent>
+              </Tooltip>
+            </div>
           </div>
         </SidebarFooter>
       </Sidebar>

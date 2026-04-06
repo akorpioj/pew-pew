@@ -56,7 +56,16 @@ service cloud.firestore {
     match /mail/{docId} {
       allow read, write: if false;
     }
+    // ── deletionRequests ───────────────────────────────────────────────────────────
+    // Written by Cloud Functions (admin SDK). ADMINs can read for review.
+    // No client writes — the callable Function handles this.
+    match /deletionRequests/{docId} {
+      allow read, list: if
+        request.auth != null &&
+        request.auth.token.role == 'ADMIN';
 
+      allow write: if false; // Cloud Function admin SDK only
+    }
     // All other collections: deny by default
     match /{document=**} {
       allow read, write: if false;

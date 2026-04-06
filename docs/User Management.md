@@ -51,8 +51,8 @@
 - [X] Apply the same rate limiting as UM-2
 
 ### UM-6 · User Profile Page
-- [ ] Build a `ProfilePage` showing: display name, email, auth provider badge (Email / Google / Microsoft)
-- [ ] **Re-authentication gate**: before showing the change-email or change-password form, call `reauthenticateWithCredential()` and require the current password; surface a meaningful error if it fails
-- [ ] **Change email**: call `verifyBeforeUpdateEmail(newEmail)` — Firebase sends a verification link to the new address; do not apply the change until the user clicks the link
-- [ ] **Change password** (email/password accounts only): call `updatePassword(newPassword)` after re-auth; hide this section entirely for Google/Microsoft accounts and display the provider name instead
-- [ ] **Account deletion**: show a "Delete my account" option that disables the Auth account and writes a `deletionRequest` Firestore document for admin review; confirm with the user via a dialog before proceeding
+- [X] Build a `ProfilePage` showing: display name, email, auth provider badge (Email / Google / Microsoft)
+- [X] **Re-authentication gate**: before showing the change-email or change-password form, call `reauthenticateWithCredential()` and require the current password; surface a meaningful error if it fails
+- [X] **Change email**: call `verifyBeforeUpdateEmail(newEmail)` — Firebase sends a verification link to the new address; do not apply the change until the user clicks the link
+- [X] **Change password** (email/password accounts only): call `updatePassword(newPassword)` after re-auth; hide this section entirely for Google/Microsoft accounts and display the provider name instead
+- [X] **Account deletion**: show a "Delete my account" option that disables the Auth account and writes a `deletionRequest` Firestore document for admin review; confirm with the user via a dialog before proceeding

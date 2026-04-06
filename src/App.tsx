@@ -7,6 +7,7 @@ import ResetPasswordPage from "@/pages/ResetPasswordPage";
 import WikiLayout from "@/layouts/WikiLayout";
 import UserManagementPage from "@/pages/UserManagementPage";
 import AdminRoute from "@/components/AdminRoute";
+import ProfilePage from "@/pages/ProfilePage";
 import ArticleListPage from "@/pages/ArticleListPage";
 import ArticleViewPage from "@/pages/ArticleViewPage";
 import ArticleEditorPage from "@/pages/ArticleEditorPage";
@@ -48,6 +49,9 @@ export default function App() {
               <Route element={<AdminRoute />}>
                 <Route path="/admin/users" element={<UserManagementPage />} />
               </Route>
+
+              {/* Profile — all authenticated users */}
+              <Route path="/profile" element={<ProfilePage />} />
             </Route>
           </Route>
 

@@ -110,3 +110,9 @@ export const requestPasswordResetCallable = httpsCallable<
   { email: string },
   { message: string }
 >(functions, "requestPasswordReset");
+
+/** UM-6: Disable user's own Auth account and queue a data deletion request. */
+export const requestAccountDeletionCallable = httpsCallable<void, void>(
+  functions,
+  "requestAccountDeletion"
+);
