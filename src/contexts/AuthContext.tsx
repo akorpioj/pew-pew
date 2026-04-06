@@ -8,16 +8,19 @@ import {
 import {
   onAuthStateChanged,
   signInWithPopup,
+  signInWithEmailAndPassword,
   signOut,
   type User,
 } from "firebase/auth";
-import { auth, googleProvider } from "@/lib/firebase";
+import { auth, googleProvider, microsoftProvider } from "@/lib/firebase";
 
 interface AuthContextValue {
   user: User | null;
   role: string | null; // Custom claim: 'ADMIN' | 'EXPERT' | 'VIEWER' | null
   loading: boolean;
-  signIn: () => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
+  signInWithMicrosoft: () => Promise<void>;
+  signInWithEmailPassword: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -33,7 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(firebaseUser);
 
       if (firebaseUser) {
-        // Read the custom role claim set by the setAdminClaim Cloud Function (Phase 5).
+        // Read the custom role claim set by the setUserRole Cloud Function.
         const tokenResult = await firebaseUser.getIdTokenResult();
         setRole((tokenResult.claims["role"] as string) ?? null);
       } else {
@@ -46,8 +49,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return unsubscribe;
   }, []);
 
-  const handleSignIn = async () => {
+  const handleSignInWithGoogle = async () => {
     await signInWithPopup(auth, googleProvider);
+  };
+
+  const handleSignInWithMicrosoft = async () => {
+    await signInWithPopup(auth, microsoftProvider);
+  };
+
+  const handleSignInWithEmailPassword = async (
+    email: string,
+    password: string
+  ) => {
+    await signInWithEmailAndPassword(auth, email, password);
   };
 
   const handleSignOut = async () => {
@@ -60,7 +74,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         role,
         loading,
-        signIn: handleSignIn,
+        signInWithGoogle: handleSignInWithGoogle,
+        signInWithMicrosoft: handleSignInWithMicrosoft,
+        signInWithEmailPassword: handleSignInWithEmailPassword,
         signOut: handleSignOut,
       }}
     >
