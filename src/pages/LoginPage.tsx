@@ -199,6 +199,12 @@ export default function LoginPage() {
           Request access
         </Link>
       </p>
+
+      <p className="text-sm text-muted-foreground">
+        <Link to="/forgot-password" className="underline underline-offset-4 hover:text-primary">
+          Forgot your password?
+        </Link>
+      </p>
     </div>
   );
 }

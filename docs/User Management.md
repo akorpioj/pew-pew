@@ -44,11 +44,11 @@
 - [X] **Audit log**: write an `adminAuditLog` Firestore document for every action: `{ actorUid, targetUid, action, timestamp }`
 
 ### UM-5 · Password Reset (Self-Service)
-- [ ] Build a `ForgotPasswordPage`: email input + "Send Reset Link" button
-- [ ] On submit, call `sendPasswordResetEmail()` (Firebase SDK client-side); always display the neutral message regardless of whether the email exists (prevents enumeration)
-- [ ] Password reset links expire after 1 hour (Firebase default; confirm in Firebase Console → Auth → Templates)
-- [ ] Show an "Link expired — request a new one" page when the user lands on a stale reset link
-- [ ] Apply the same rate limiting as UM-2
+- [X] Build a `ForgotPasswordPage`: email input + "Send Reset Link" button
+- [X] On submit, call `sendPasswordResetEmail()` (Firebase SDK client-side); always display the neutral message regardless of whether the email exists (prevents enumeration)
+- [X] Password reset links expire after 1 hour (Firebase default; confirm in Firebase Console → Auth → Templates)
+- [X] Show an "Link expired — request a new one" page when the user lands on a stale reset link
+- [X] Apply the same rate limiting as UM-2
 
 ### UM-6 · User Profile Page
 - [ ] Build a `ProfilePage` showing: display name, email, auth provider badge (Email / Google / Microsoft)

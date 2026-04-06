@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "@/pages/LoginPage";
 import RequestAccessPage from "@/pages/RequestAccessPage";
 import AcceptInvitePage from "@/pages/AcceptInvitePage";
+import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
+import ResetPasswordPage from "@/pages/ResetPasswordPage";
 import WikiLayout from "@/layouts/WikiLayout";
 import UserManagementPage from "@/pages/UserManagementPage";
 import AdminRoute from "@/components/AdminRoute";
@@ -22,6 +24,8 @@ export default function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/request-access" element={<RequestAccessPage />} />
           <Route path="/accept-invite" element={<AcceptInvitePage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
 
           {/* Redirect root to wiki */}
           <Route path="/" element={<Navigate to="/wiki" replace />} />

@@ -15,3 +15,4 @@ export { sendInvite } from "./sendInvite";
 export { listUsers } from "./listUsers";
 export { revokeUserAccess, restoreUserAccess } from "./revokeUserAccess";
 export { sendPasswordReset } from "./sendPasswordReset";
+export { requestPasswordReset } from "./requestPasswordReset";

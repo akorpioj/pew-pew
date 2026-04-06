@@ -104,3 +104,9 @@ export const sendPasswordResetCallable = httpsCallable<{ uid: string }, void>(
   functions,
   "sendPasswordReset"
 );
+
+/** UM-5: Self-service password reset — rate-limited, always returns neutral response. */
+export const requestPasswordResetCallable = httpsCallable<
+  { email: string },
+  { message: string }
+>(functions, "requestPasswordReset");
