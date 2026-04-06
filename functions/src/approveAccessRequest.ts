@@ -1,6 +1,8 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { getAuth } from "firebase-admin/auth";
 import { sendInviteInternal } from "./sendInvite";
+import { writeAuditLog } from "./auditLog";
 
 /**
  * Admin-only callable that approves a pending access request.
@@ -61,5 +63,14 @@ export const approveAccessRequest = onCall(
 
     // ── Delegate to the invite flow ───────────────────────────────────────────
     await sendInviteInternal(email.trim().toLowerCase());
+
+    // ── Audit log ─────────────────────────────────────────────────────────────
+    // Resolve target UID for the log entry (created by sendInviteInternal).
+    try {
+      const targetUser = await getAuth().getUserByEmail(email.trim().toLowerCase());
+      await writeAuditLog(request.auth.uid, targetUser.uid, "invite_approved");
+    } catch {
+      // Non-fatal: audit failure must not roll back the approval.
+    }
   }
 );

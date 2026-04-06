@@ -36,12 +36,12 @@
 - [X] Allow the admin to re-send an invite from the User Management page (re-generates the link without creating a duplicate Auth user)
 
 ### UM-4 · Admin User Management Page
-- [ ] Build a `UserManagementPage` (ADMIN only) with a data table showing all `User` rows: name / email, role, status (active / disabled)
-- [ ] **Revoke access**: call `admin.auth().updateUser(uid, { disabled: true })` via a `revokeUserAccess` callable Function; update `User.status` in Data Connect — do NOT delete the user or their articles
-- [ ] **Grant/remove EXPERT role**: update the `role` custom claim via `admin.auth().setCustomUserClaims()` + update the `User` row
-- [ ] **Grant ADMIN role**: same as above, but require a confirmation dialog on the client; guard the Function so it rejects if the actor is demoting themselves or removing the last ADMIN
-- [ ] **Trigger password reset**: call `admin.auth().generatePasswordResetLink(email)` and send it via email — the Function never receives or returns a raw password
-- [ ] **Audit log**: write an `adminAuditLog` Firestore document for every action: `{ actorUid, targetUid, action, timestamp }`
+- [X] Build a `UserManagementPage` (ADMIN only) with a data table showing all `User` rows: name / email, role, status (active / disabled)
+- [X] **Revoke access**: call `admin.auth().updateUser(uid, { disabled: true })` via a `revokeUserAccess` callable Function; update `User.status` in Data Connect — do NOT delete the user or their articles
+- [X] **Grant/remove EXPERT role**: update the `role` custom claim via `admin.auth().setCustomUserClaims()` + update the `User` row
+- [X] **Grant ADMIN role**: same as above, but require a confirmation dialog on the client; guard the Function so it rejects if the actor is demoting themselves or removing the last ADMIN
+- [X] **Trigger password reset**: call `admin.auth().generatePasswordResetLink(email)` and send it via email — the Function never receives or returns a raw password
+- [X] **Audit log**: write an `adminAuditLog` Firestore document for every action: `{ actorUid, targetUid, action, timestamp }`
 
 ### UM-5 · Password Reset (Self-Service)
 - [ ] Build a `ForgotPasswordPage`: email input + "Send Reset Link" button

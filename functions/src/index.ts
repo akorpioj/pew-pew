@@ -12,3 +12,6 @@ export { requestAccess } from "./requestAccess";
 export { rejectAccessRequest } from "./rejectAccessRequest";
 export { approveAccessRequest } from "./approveAccessRequest";
 export { sendInvite } from "./sendInvite";
+export { listUsers } from "./listUsers";
+export { revokeUserAccess, restoreUserAccess } from "./revokeUserAccess";
+export { sendPasswordReset } from "./sendPasswordReset";

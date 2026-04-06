@@ -8,6 +8,14 @@ import {
 } from "firebase/firestore";
 import { FirebaseError } from "firebase/app";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import firestore, {
@@ -18,15 +26,46 @@ import {
   approveAccessRequestCallable,
   rejectAccessRequestCallable,
   sendInviteCallable,
+  listUsersCallable,
+  revokeUserAccessCallable,
+  restoreUserAccessCallable,
+  setUserRoleCallable,
+  sendPasswordResetCallable,
 } from "@/lib/functions";
+import { useAuth } from "@/contexts/AuthContext";
 
 type PendingRequest = AccessRequest & { id: string };
 
+interface UserRow {
+  uid: string;
+  email: string;
+  displayName: string | null;
+  role: string;
+  disabled: boolean;
+}
+
+const ROLE_LABELS: Record<string, string> = {
+  ADMIN: "Admin",
+  EXPERT: "Expert",
+  VIEWER: "Viewer",
+};
+
 export default function UserManagementPage() {
+  const { user: currentUser } = useAuth();
+
+  // ── Confirm-grant-admin dialog state ───────────────────────────────────
+  const [confirmAdminTarget, setConfirmAdminTarget] = useState<UserRow | null>(null);
   const [requests, setRequests] = useState<PendingRequest[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const [actingOn, setActingOn] = useState<Set<string>>(new Set());
   const [actionError, setActionError] = useState<string | null>(null);
+
+  // ── All users table state ─────────────────────────────────────────────────
+  const [users, setUsers] = useState<UserRow[]>([]);
+  const [loadingUsers, setLoadingUsers] = useState(true);
+  const [usersError, setUsersError] = useState<string | null>(null);
+  const [actingOnUser, setActingOnUser] = useState<Set<string>>(new Set());
+  const [userActionError, setUserActionError] = useState<string | null>(null);
 
   // ── Re-send / direct invite state ────────────────────────────────────────
   const [inviteEmail, setInviteEmail] = useState("");
@@ -36,6 +75,136 @@ export default function UserManagementPage() {
     message: string;
   } | null>(null);
   const inviteInputRef = useRef<HTMLInputElement>(null);
+
+  const refreshUsers = () => {
+    setLoadingUsers(true);
+    listUsersCallable()
+      .then((res) => {
+        setUsers(res.data.users);
+        setLoadingUsers(false);
+      })
+      .catch((err) => {
+        setUsersError(
+          err instanceof FirebaseError ? err.message : "Failed to load users."
+        );
+        setLoadingUsers(false);
+      });
+  };
+
+  // Load all users once on mount (admin SDK call — not real-time).
+  useEffect(() => { refreshUsers(); }, []);
+
+  const setActingOnUserFlag = (uid: string, on: boolean) =>
+    setActingOnUser((prev) => {
+      const next = new Set(prev);
+      on ? next.add(uid) : next.delete(uid);
+      return next;
+    });
+
+  const handleRevokeAccess = async (uid: string) => {
+    setUserActionError(null);
+    setActingOnUserFlag(uid, true);
+    try {
+      await revokeUserAccessCallable({ uid });
+      refreshUsers();
+    } catch (err) {
+      setUserActionError(
+        err instanceof FirebaseError
+          ? err.message
+          : "Failed to revoke access. Please try again."
+      );
+    } finally {
+      setActingOnUserFlag(uid, false);
+    }
+  };
+
+  const handleRestoreAccess = async (uid: string) => {
+    setUserActionError(null);
+    setActingOnUserFlag(uid, true);
+    try {
+      await restoreUserAccessCallable({ uid });
+      refreshUsers();
+    } catch (err) {
+      setUserActionError(
+        err instanceof FirebaseError
+          ? err.message
+          : "Failed to restore access. Please try again."
+      );
+    } finally {
+      setActingOnUserFlag(uid, false);
+    }
+  };
+
+  const handleSetRole = async (
+    uid: string,
+    role: "EXPERT" | "VIEWER"
+  ) => {
+    setUserActionError(null);
+    setActingOnUserFlag(uid, true);
+    try {
+      await setUserRoleCallable({ uid, role });
+      refreshUsers();
+    } catch (err) {
+      setUserActionError(
+        err instanceof FirebaseError
+          ? err.message
+          : "Failed to update role. Please try again."
+      );
+    } finally {
+      setActingOnUserFlag(uid, false);
+    }
+  };
+
+  const handleGrantAdmin = async (row: UserRow) => {
+    setConfirmAdminTarget(null);
+    setUserActionError(null);
+    setActingOnUserFlag(row.uid, true);
+    try {
+      await setUserRoleCallable({ uid: row.uid, role: "ADMIN" });
+      refreshUsers();
+    } catch (err) {
+      setUserActionError(
+        err instanceof FirebaseError
+          ? err.message
+          : "Failed to grant ADMIN role. Please try again."
+      );
+    } finally {
+      setActingOnUserFlag(row.uid, false);
+    }
+  };
+
+  const handleRemoveAdmin = async (uid: string) => {
+    setUserActionError(null);
+    setActingOnUserFlag(uid, true);
+    try {
+      await setUserRoleCallable({ uid, role: "VIEWER" });
+      refreshUsers();
+    } catch (err) {
+      setUserActionError(
+        err instanceof FirebaseError
+          ? err.message
+          : "Failed to remove ADMIN role. Please try again."
+      );
+    } finally {
+      setActingOnUserFlag(uid, false);
+    }
+  };
+
+  const handleSendPasswordReset = async (uid: string) => {
+    setUserActionError(null);
+    setActingOnUserFlag(uid, true);
+    try {
+      await sendPasswordResetCallable({ uid });
+    } catch (err) {
+      setUserActionError(
+        err instanceof FirebaseError
+          ? err.message
+          : "Failed to send password reset. Please try again."
+      );
+    } finally {
+      setActingOnUserFlag(uid, false);
+    }
+  };
 
   useEffect(() => {
     const q = query(
@@ -130,6 +299,35 @@ export default function UserManagementPage() {
 
   return (
     <div className="flex flex-col gap-6">
+      {/* ── Grant Admin confirmation dialog ── */}
+      <Dialog
+        open={confirmAdminTarget !== null}
+        onOpenChange={(open) => { if (!open) setConfirmAdminTarget(null); }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Grant ADMIN role?</DialogTitle>
+            <DialogDescription>
+              You are about to grant full admin rights to{" "}
+              <strong>{confirmAdminTarget?.email}</strong>. They will be able to
+              manage all users, roles, and content. This cannot be undone
+              without another admin account.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmAdminTarget(null)}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              disabled={confirmAdminTarget !== null && actingOnUser.has(confirmAdminTarget.uid)}
+              onClick={() => confirmAdminTarget && handleGrantAdmin(confirmAdminTarget)}
+            >
+              Grant Admin
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       <div>
         <h1 className="text-xl font-semibold tracking-tight">User Management</h1>
         <p className="text-sm text-muted-foreground">
@@ -243,6 +441,165 @@ export default function UserManagementPage() {
           >
             {inviteResult.message}
           </p>
+        )}
+      </section>
+
+      {/* ── All users table ── */}
+      <section>
+        <h2 className="mb-1 text-sm font-medium">
+          All Users
+          {!loadingUsers && users.length > 0 && (
+            <span className="ml-2 rounded-full bg-muted px-2 py-0.5 text-xs font-normal tabular-nums">
+              {users.length}
+            </span>
+          )}
+        </h2>
+        {userActionError && (
+          <p role="alert" className="mb-2 text-sm text-destructive">
+            {userActionError}
+          </p>
+        )}
+
+        {usersError ? (
+          <p role="alert" className="text-sm text-destructive">
+            {usersError}
+          </p>
+        ) : loadingUsers ? (
+          <div className="flex flex-col gap-2">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="h-12 w-full rounded-lg" />
+            ))}
+          </div>
+        ) : users.length === 0 ? (
+          <p className="text-sm text-muted-foreground">No users found.</p>
+        ) : (
+          <div className="overflow-x-auto rounded-lg border">
+            <table className="w-full min-w-[36rem] text-sm">
+              <thead>
+                <tr className="border-b bg-muted/50 text-left text-xs font-medium text-muted-foreground">
+                  <th className="px-4 py-2">Email</th>
+                  <th className="px-4 py-2">Display name</th>
+                  <th className="px-4 py-2">Role</th>
+                  <th className="px-4 py-2">Status</th>
+                  <th className="px-4 py-2">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map((u, index) => (
+                  <tr
+                    key={u.uid}
+                    className={`${index < users.length - 1 ? "border-b" : ""} ${
+                      u.disabled ? "opacity-50" : ""
+                    }`}
+                  >
+                    <td className="px-4 py-2.5 font-medium">{u.email}</td>
+                    <td className="px-4 py-2.5 text-muted-foreground">
+                      {u.displayName ?? <span className="italic">—</span>}
+                    </td>
+                    <td className="px-4 py-2.5">
+                      <span
+                        className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
+                          u.role === "ADMIN"
+                            ? "bg-primary/10 text-primary"
+                            : u.role === "EXPERT"
+                              ? "bg-secondary text-secondary-foreground"
+                              : "bg-muted text-muted-foreground"
+                        }`}
+                      >
+                        {ROLE_LABELS[u.role] ?? u.role}
+                      </span>
+                    </td>
+                    <td className="px-4 py-2.5">
+                      <span
+                        className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
+                          u.disabled
+                            ? "bg-destructive/10 text-destructive"
+                            : "bg-green-500/10 text-green-700 dark:text-green-400"
+                        }`}
+                      >
+                        {u.disabled ? "Disabled" : "Active"}
+                      </span>
+                    </td>
+                    <td className="px-4 py-2.5">
+                      <div className="flex flex-wrap gap-2">
+                        {/* Role toggle — EXPERT ↔ VIEWER only; ADMIN is handled below */}
+                        {u.role === "VIEWER" && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            disabled={actingOnUser.has(u.uid)}
+                            onClick={() => handleSetRole(u.uid, "EXPERT")}
+                          >
+                            {actingOnUser.has(u.uid) ? "…" : "Make Expert"}
+                          </Button>
+                        )}
+                        {u.role === "EXPERT" && (
+                          <>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              disabled={actingOnUser.has(u.uid)}
+                              onClick={() => handleSetRole(u.uid, "VIEWER")}
+                            >
+                              {actingOnUser.has(u.uid) ? "…" : "Remove Expert"}
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              disabled={actingOnUser.has(u.uid)}
+                              onClick={() => setConfirmAdminTarget(u)}
+                            >
+                              Make Admin
+                            </Button>
+                          </>
+                        )}
+                        {u.role === "ADMIN" && u.uid !== currentUser?.uid && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            disabled={actingOnUser.has(u.uid)}
+                            onClick={() => handleRemoveAdmin(u.uid)}
+                          >
+                            {actingOnUser.has(u.uid) ? "…" : "Remove Admin"}
+                          </Button>
+                        )}
+                        {/* Access revoke / restore */}
+                        {u.disabled ? (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            disabled={actingOnUser.has(u.uid)}
+                            onClick={() => handleRestoreAccess(u.uid)}
+                          >
+                            {actingOnUser.has(u.uid) ? "\u2026" : "Restore"}
+                          </Button>
+                        ) : (
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            disabled={actingOnUser.has(u.uid)}
+                            onClick={() => handleRevokeAccess(u.uid)}
+                          >
+                            {actingOnUser.has(u.uid) ? "\u2026" : "Revoke"}
+                          </Button>
+                        )}
+                        {/* Password reset — only for email/password accounts (no provider data available here;
+                            the button is shown for all users and the CF handles edge cases gracefully) */}
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          disabled={actingOnUser.has(u.uid)}
+                          onClick={() => handleSendPasswordReset(u.uid)}
+                        >
+                          {actingOnUser.has(u.uid) ? "\u2026" : "Send Reset"}
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </section>
     </div>

@@ -4,6 +4,7 @@ import { getAuth } from "firebase-admin/auth";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import { getDataConnect } from "firebase-admin/data-connect";
 import { logger } from "firebase-functions";
+import { writeAuditLog } from "./auditLog";
 
 const connectorConfig = {
   location: "europe-north1",
@@ -127,5 +128,13 @@ export const sendInvite = onCall(
     }
 
     await sendInviteInternal(email.trim().toLowerCase());
+
+    // ── Audit log ─────────────────────────────────────────────────────────────
+    try {
+      const targetUser = await getAuth().getUserByEmail(email.trim().toLowerCase());
+      await writeAuditLog(request.auth.uid, targetUser.uid, "invite_sent");
+    } catch {
+      // Non-fatal.
+    }
   }
 );

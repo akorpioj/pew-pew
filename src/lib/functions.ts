@@ -66,3 +66,41 @@ export const sendInviteCallable = httpsCallable<
   { email: string },
   void
 >(functions, "sendInvite");
+
+/** UM-4: List all Firebase Auth users with role and disabled status. */
+export const listUsersCallable = httpsCallable<
+  void,
+  {
+    users: {
+      uid: string;
+      email: string;
+      displayName: string | null;
+      role: string;
+      disabled: boolean;
+    }[];
+  }
+>(functions, "listUsers");
+
+/** UM-4: Disable a user's Firebase Auth account and revoke all active sessions. */
+export const revokeUserAccessCallable = httpsCallable<{ uid: string }, void>(
+  functions,
+  "revokeUserAccess"
+);
+
+/** UM-4: Re-enable a previously disabled Firebase Auth account. */
+export const restoreUserAccessCallable = httpsCallable<{ uid: string }, void>(
+  functions,
+  "restoreUserAccess"
+);
+
+/** UM-4: Set a user's role (EXPERT / VIEWER for UM-4.3; ADMIN via UM-4.4). */
+export const setUserRoleCallable = httpsCallable<
+  { uid: string; role: "ADMIN" | "EXPERT" | "VIEWER" },
+  { success: boolean; uid: string; role: string }
+>(functions, "setUserRole");
+
+/** UM-4: Trigger a password-reset email to be sent to a user (admin action). */
+export const sendPasswordResetCallable = httpsCallable<{ uid: string }, void>(
+  functions,
+  "sendPasswordReset"
+);
