@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { FirebaseError } from "firebase/app";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -192,6 +192,13 @@ export default function LoginPage() {
           {error}
         </p>
       )}
+
+      <p className="text-sm text-muted-foreground">
+        Don&apos;t have access?{" "}
+        <Link to="/request-access" className="underline underline-offset-4 hover:text-primary">
+          Request access
+        </Link>
+      </p>
     </div>
   );
 }

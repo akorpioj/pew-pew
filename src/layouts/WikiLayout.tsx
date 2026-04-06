@@ -1,11 +1,17 @@
-import { Outlet } from "react-router-dom";
-import { LogOutIcon } from "lucide-react";
+import { Outlet, useNavigate } from "react-router-dom";
+import { LogOutIcon, UsersIcon } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarInset,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
   SidebarProvider,
   SidebarSeparator,
   SidebarTrigger,
@@ -17,7 +23,8 @@ import CategoryTree from "@/components/CategoryTree";
 import AiAssistantSheet from "@/components/AiAssistantSheet";
 
 export default function WikiLayout() {
-  const { user, signOut } = useAuth();
+  const { user, role, signOut } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <SidebarProvider>
@@ -35,6 +42,28 @@ export default function WikiLayout() {
         {/* Category tree — filled in T10 */}
         <SidebarContent>
           <CategoryTree />
+
+          {role === "ADMIN" && (
+            <>
+              <SidebarSeparator />
+              <SidebarGroup>
+                <SidebarGroupLabel>Admin</SidebarGroupLabel>
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton
+                        tooltip="User Management"
+                        onClick={() => navigate("/admin/users")}
+                      >
+                        <UsersIcon />
+                        <span>User Management</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </SidebarGroup>
+            </>
+          )}
         </SidebarContent>
 
         <SidebarSeparator />

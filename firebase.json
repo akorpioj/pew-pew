@@ -5,6 +5,9 @@
     },
     "functions": {
       "port": 5001
+    },
+    "firestore": {
+      "port": 8080
     }
   },
   "dataconnect": {
@@ -13,5 +16,8 @@
   "functions": {
     "source": "functions",
     "runtime": "nodejs20"
+  },
+  "firestore": {
+    "rules": "firestore.rules"
   }
 }

@@ -17,16 +17,16 @@
 - [ ] Enable App Check (reCAPTCHA v3 for web) and enforce it on all callable Functions and Data Connect operations
 
 ### UM-2 · Access Request Flow
-- [ ] Create a `Firestore` collection `accessRequests` with fields: `email`, `status` (`pending` | `approved` | `rejected`), `createdAt`
-- [ ] Build `RequestAccessPage`: email input + "Request Access" button
-- [ ] On submit, upsert a `pending` record — silently ignore duplicate emails at the backend; always return the neutral message *"If your request can be fulfilled, you will receive an email."*
-- [ ] Add rate limiting to the `requestAccess` callable Function (3 calls / IP / 10 min using a Firestore counter or Firebase App Check token budget)
-- [ ] Admin UI: display `accessRequests` where `status === 'pending'` in the User Management page (approve / reject actions)
-- [ ] On **reject**: set `status = 'rejected'`, send a decline email (no reason given), then delete the document so the email can be reused
-- [ ] On **approve**: delegate to the invite flow (UM-3)
+- [X] Create a `Firestore` collection `accessRequests` with fields: `email`, `status` (`pending` | `approved` | `rejected`), `createdAt`
+- [X] Build `RequestAccessPage`: email input + "Request Access" button
+- [X] On submit, upsert a `pending` record — silently ignore duplicate emails at the backend; always return the neutral message *"If your request can be fulfilled, you will receive an email."*
+- [X] Add rate limiting to the `requestAccess` callable Function (3 calls / IP / 10 min using a Firestore counter or Firebase App Check token budget)
+- [X] Admin UI: display `accessRequests` where `status === 'pending'` in the User Management page (approve / reject actions)
+- [X] On **reject**: set `status = 'rejected'`, send a decline email (no reason given), then delete the document so the email can be reused
+- [X] On **approve**: delegate to the invite flow (UM-3)
 
 ### UM-3 · Invite & First-Login Flow
-- [ ] Create a `sendInvite` callable Function that:
+- [X] Create a `sendInvite` callable Function that:
   - Creates a Firebase Auth user with the given email (disabled = false)
   - Generates an email sign-in link (`generateSignInWithEmailLink`) with 72-hour expiry
   - Sends the link via email (Firebase Extensions → Trigger Email, or a direct SendGrid call)

@@ -1,0 +1,76 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { requestAccessCallable } from "@/lib/functions";
+
+const NEUTRAL_MESSAGE =
+  "If your request can be fulfilled, you will receive an email.";
+
+export default function RequestAccessPage() {
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await requestAccessCallable({ email });
+    } catch {
+      // Intentionally swallowed — always show neutral message to prevent
+      // email enumeration and avoid exposing backend errors to the client.
+    } finally {
+      setLoading(false);
+      setSubmitted(true);
+    }
+  };
+
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-background px-4">
+      <div className="flex flex-col items-center gap-2 text-center">
+        <h1 className="text-2xl font-semibold tracking-tight">Request Access</h1>
+        <p className="text-sm text-muted-foreground">
+          Enter your email address and we&apos;ll review your request.
+        </p>
+      </div>
+
+      {submitted ? (
+        <p
+          role="status"
+          className="max-w-sm text-center text-sm text-muted-foreground"
+        >
+          {NEUTRAL_MESSAGE}
+        </p>
+      ) : (
+        <form
+          onSubmit={handleSubmit}
+          className="flex w-full max-w-sm flex-col gap-3"
+        >
+          <Input
+            type="email"
+            placeholder="Email"
+            autoComplete="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={loading}
+          />
+          <Button type="submit" disabled={loading} className="w-full">
+            {loading ? "Submitting…" : "Request Access"}
+          </Button>
+        </form>
+      )}
+
+      <p className="text-sm text-muted-foreground">
+        Already have access?{" "}
+        <Link
+          to="/login"
+          className="underline underline-offset-4 hover:text-primary"
+        >
+          Sign in
+        </Link>
+      </p>
+    </div>
+  );
+}

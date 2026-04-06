@@ -1,0 +1,65 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── accessRequests ────────────────────────────────────────────────────────
+    //
+    // Anyone (unauthenticated) may CREATE a request with only the fields:
+    //   email      (string, required)
+    //   status     must be "pending" on create
+    //   createdAt  (timestamp, required)
+    //
+    // Only ADMIN users (custom claim role == 'ADMIN') may READ, LIST, UPDATE,
+    // or DELETE requests. The callable Function writes with admin privileges and
+    // bypasses these rules, but the rules protect direct client SDK access.
+    match /accessRequests/{requestId} {
+
+      // Public write: new access request submission
+      allow create: if
+        request.resource.data.keys().hasOnly(['email', 'status', 'createdAt']) &&
+        request.resource.data.email is string &&
+        request.resource.data.email.size() > 0 &&
+        request.resource.data.status == 'pending' &&
+        request.resource.data.createdAt is timestamp;
+
+      // Admin read / list
+      allow read, list: if
+        request.auth != null &&
+        request.auth.token.role == 'ADMIN';
+
+      // Admin update (approve / reject) and delete (cleanup after rejection)
+      allow update, delete: if
+        request.auth != null &&
+        request.auth.token.role == 'ADMIN';
+    }
+
+    // ── adminAuditLog ─────────────────────────────────────────────────────────
+    // Written by Cloud Functions (admin SDK, bypasses rules).
+    // ADMINs can read; no client writes allowed.
+    match /adminAuditLog/{logId} {
+      allow read, list: if
+        request.auth != null &&
+        request.auth.token.role == 'ADMIN';
+
+      allow write: if false; // Cloud Function admin SDK only
+    }
+
+    // ── _rateLimits ───────────────────────────────────────────────────────────
+    // Written exclusively by Cloud Functions (admin SDK). No client access.
+    match /_rateLimits/{docId} {
+      allow read, write: if false;
+    }
+
+    // ── mail ─────────────────────────────────────────────────────────────────
+    // Written by Cloud Functions (admin SDK) for the "Trigger Email from
+    // Firestore" extension. No client reads or writes permitted.
+    match /mail/{docId} {
+      allow read, write: if false;
+    }
+
+    // All other collections: deny by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

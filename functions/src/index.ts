@@ -8,3 +8,7 @@ export { embedArticle } from "./embedArticle";
 export { ragAnswer } from "./ragAnswer";
 export { searchWikiByQuery } from "./searchWikiByQuery";
 export { askWiki } from "./askWiki";
+export { requestAccess } from "./requestAccess";
+export { rejectAccessRequest } from "./rejectAccessRequest";
+export { approveAccessRequest } from "./approveAccessRequest";
+export { sendInvite } from "./sendInvite";

@@ -1,6 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "@/pages/LoginPage";
+import RequestAccessPage from "@/pages/RequestAccessPage";
 import WikiLayout from "@/layouts/WikiLayout";
+import UserManagementPage from "@/pages/UserManagementPage";
+import AdminRoute from "@/components/AdminRoute";
 import ArticleListPage from "@/pages/ArticleListPage";
 import ArticleViewPage from "@/pages/ArticleViewPage";
 import ArticleEditorPage from "@/pages/ArticleEditorPage";
@@ -16,6 +19,7 @@ export default function App() {
         <Routes>
           {/* Public */}
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/request-access" element={<RequestAccessPage />} />
 
           {/* Redirect root to wiki */}
           <Route path="/" element={<Navigate to="/wiki" replace />} />
@@ -32,6 +36,11 @@ export default function App() {
               <Route element={<ExpertRoute />}>
                 <Route path="/wiki/edit" element={<ArticleEditorPage />} />
                 <Route path="/wiki/edit/:slug" element={<ArticleEditorPage />} />
+              </Route>
+
+              {/* Admin-only routes */}
+              <Route element={<AdminRoute />}>
+                <Route path="/admin/users" element={<UserManagementPage />} />
               </Route>
             </Route>
           </Route>

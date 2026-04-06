@@ -39,3 +39,30 @@ export const ragAnswerCallable = httpsCallable<
   { question: string; contextArticles: { title: string; content: unknown }[] },
   { answer: string }
 >(functions, "ragAnswer");
+
+/** UM-2: Submit an access request for a given email address. */
+export const requestAccessCallable = httpsCallable<
+  { email: string },
+  { message: string }
+>(functions, "requestAccess");
+
+/** UM-2: Reject a pending access request (sets status, sends decline email, deletes doc). */
+export const rejectAccessRequestCallable = httpsCallable<
+  { requestId: string },
+  void
+>(functions, "rejectAccessRequest");
+
+/**
+ * UM-2/UM-3: Approve a pending access request.
+ * Marks the request as approved and triggers the invite flow (sendInvite).
+ */
+export const approveAccessRequestCallable = httpsCallable<
+  { requestId: string; email: string },
+  void
+>(functions, "approveAccessRequest");
+
+/** UM-3: Send a direct invite to an email address (bypasses access-request flow). */
+export const sendInviteCallable = httpsCallable<
+  { email: string },
+  void
+>(functions, "sendInvite");
