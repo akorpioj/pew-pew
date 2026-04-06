@@ -1,6 +1,7 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getAuth } from "firebase-admin/auth";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { umConfig } from "./umConfig";
 
 /**
  * Authenticated callable that allows a user to request deletion of their own
@@ -16,7 +17,7 @@ import { getFirestore, FieldValue } from "firebase-admin/firestore";
  * The caller can only request deletion for their own account (uid from token).
  */
 export const requestAccountDeletion = onCall(
-  { region: "europe-north1" },
+  { region: umConfig.region },
   async (request) => {
     if (!request.auth) {
       throw new HttpsError("unauthenticated", "You must be signed in.");
@@ -35,7 +36,7 @@ export const requestAccountDeletion = onCall(
 
     // Queue the deletion request for admin review.
     const db = getFirestore();
-    await db.collection("deletionRequests").add({
+    await db.collection(umConfig.collections.deletionRequests).add({
       uid,
       email,
       requestedAt: FieldValue.serverTimestamp(),

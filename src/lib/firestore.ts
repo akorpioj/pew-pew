@@ -4,6 +4,7 @@ import {
   type Timestamp,
 } from "firebase/firestore";
 import app from "./firebase";
+import { umConfig } from "./umConfig";
 
 const firestore = getFirestore(app);
 
@@ -24,6 +25,6 @@ export interface AccessRequest {
   createdAt: Timestamp;
 }
 
-/** Collection path constant — use everywhere instead of a bare string. */
-export const ACCESS_REQUESTS_COLLECTION = "accessRequests" as const;
-export const ADMIN_AUDIT_LOG_COLLECTION = "adminAuditLog" as const;
+/** Collection path constants — sourced from umConfig so they stay in sync. */
+export const ACCESS_REQUESTS_COLLECTION = umConfig.collections.accessRequests;
+export const ADMIN_AUDIT_LOG_COLLECTION = umConfig.collections.adminAuditLog;

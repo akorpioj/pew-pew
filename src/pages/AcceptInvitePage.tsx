@@ -8,10 +8,11 @@ import {
 } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { auth } from "@/lib/firebase";
+import { umConfig } from "@/lib/umConfig";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-const EMAIL_STORAGE_KEY = "emailForSignIn";
+const EMAIL_STORAGE_KEY = umConfig.emailStorageKey;
 
 /** Firebase error codes that mean the link is expired, already used, or invalid. */
 const EXPIRED_CODES = new Set([
@@ -43,7 +44,7 @@ export default function AcceptInvitePage() {
   useEffect(() => {
     if (!isSignInWithEmailLink(auth, href)) {
       // Not a sign-in link at all — send to login.
-      navigate("/login", { replace: true });
+      navigate(umConfig.routes.login, { replace: true });
       return;
     }
 
@@ -104,7 +105,7 @@ export default function AcceptInvitePage() {
     setStage({ kind: "setting-password", user });
     try {
       await updatePassword(user, password);
-      navigate("/wiki", { replace: true });
+      navigate(umConfig.routes.appHome, { replace: true });
     } catch (err) {
       setStage({ kind: "needs-password", user });
       setFieldError(
@@ -137,11 +138,11 @@ export default function AcceptInvitePage() {
             are valid for 72 hours.
           </p>
         </div>
-        <Link to="/request-access">
+        <Link to={umConfig.routes.requestAccess}>
           <Button>Request a new invite</Button>
         </Link>
         <Link
-          to="/login"
+          to={umConfig.routes.login}
           className="text-sm text-muted-foreground underline underline-offset-4 hover:text-primary"
         >
           Back to sign in
@@ -158,7 +159,7 @@ export default function AcceptInvitePage() {
         <p className="max-w-sm text-center text-sm text-muted-foreground">
           {stage.message}
         </p>
-        <Link to="/login">
+        <Link to={umConfig.routes.login}>
           <Button variant="outline">Back to sign in</Button>
         </Link>
       </div>

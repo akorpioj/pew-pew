@@ -3,11 +3,9 @@ import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { defineString } from "firebase-functions/params";
 import { getAuth } from "firebase-admin/auth";
 import { getFirestore, FieldValue, Timestamp } from "firebase-admin/firestore";
+import { umConfig } from "./umConfig";
 
 const appUrl = defineString("APP_URL", { default: "http://localhost:5173" });
-
-const RATE_LIMIT_MAX = 3;
-const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000; // 10 minutes
 
 /**
  * Enforce a per-IP rate limit using the same sliding-window pattern as
@@ -16,7 +14,7 @@ const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000; // 10 minutes
 async function checkRateLimit(rawIp: string): Promise<void> {
   const ipHash = createHash("sha256").update(rawIp).digest("hex");
   const db = getFirestore();
-  const ref = db.collection("_rateLimits").doc(`passwordReset_${ipHash}`);
+  const ref = db.collection(umConfig.collections.rateLimits).doc(`passwordReset_${ipHash}`);
 
   await db.runTransaction(async (tx) => {
     const snap = await tx.get(ref);
@@ -30,12 +28,12 @@ async function checkRateLimit(rawIp: string): Promise<void> {
     const data = snap.data() as { count: number; windowStart: Timestamp };
     const windowStart = data.windowStart.toMillis();
 
-    if (now - windowStart > RATE_LIMIT_WINDOW_MS) {
+    if (now - windowStart > umConfig.rateLimit.windowMs) {
       tx.set(ref, { count: 1, windowStart: Timestamp.fromMillis(now) });
       return;
     }
 
-    if (data.count >= RATE_LIMIT_MAX) {
+    if (data.count >= umConfig.rateLimit.max) {
       throw new HttpsError(
         "resource-exhausted",
         "Too many requests. Please wait a few minutes and try again."
@@ -58,7 +56,7 @@ async function checkRateLimit(rawIp: string): Promise<void> {
  * - No authentication required — this is a public endpoint.
  */
 export const requestPasswordReset = onCall(
-  { region: "europe-north1" },
+  { region: umConfig.region },
   async (request) => {
     // ── Rate limiting ──────────────────────────────────────────────────────────
     const rawIp =
@@ -87,7 +85,7 @@ export const requestPasswordReset = onCall(
       });
 
       const db = getFirestore();
-      await db.collection("mail").add({
+      await db.collection(umConfig.collections.mail).add({
         to: normalizedEmail,
         message: {
           subject: "Reset your password",
@@ -102,7 +100,7 @@ export const requestPasswordReset = onCall(
             "This link expires in 1 hour. If you did not request a password",
             "reset, you can safely ignore this email.",
             "",
-            "— The Pew Pew Wiki team",
+            `— The ${umConfig.appName} team`,
           ].join("\n"),
           html: [
             "<p>Hello,</p>",
@@ -110,7 +108,7 @@ export const requestPasswordReset = onCall(
             `<p><a href="${resetLink}">Reset your password</a></p>`,
             "<p>This link expires in 1 hour. If you did not request a password",
             "reset, you can safely ignore this email.</p>",
-            "<p>— The Pew Pew Wiki team</p>",
+            `<p>— The ${umConfig.appName} team</p>`,
           ].join("\n"),
         },
         createdAt: FieldValue.serverTimestamp(),

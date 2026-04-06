@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { requestPasswordResetCallable } from "@/lib/functions";
+import { umConfig } from "@/lib/umConfig";
 
 const NEUTRAL_MESSAGE =
   "If an account exists for that email, you will receive a reset link.";
@@ -64,7 +65,7 @@ export default function ForgotPasswordPage() {
       )}
 
       <p className="text-sm text-muted-foreground">
-        <Link to="/login" className="underline underline-offset-4 hover:text-primary">
+        <Link to={umConfig.routes.login} className="underline underline-offset-4 hover:text-primary">
           Back to sign in
         </Link>
       </p>

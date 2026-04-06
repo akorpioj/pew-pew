@@ -1,5 +1,6 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { umConfig } from "./umConfig";
 
 /**
  * Admin-only callable that rejects a pending access request.
@@ -14,14 +15,14 @@ import { getFirestore, FieldValue } from "firebase-admin/firestore";
  *     the user can submit a fresh request in the future.
  */
 export const rejectAccessRequest = onCall(
-  { region: "europe-north1" },
+  { region: umConfig.region },
   async (request) => {
     // ── Auth guard ────────────────────────────────────────────────────────────
     if (!request.auth) {
       throw new HttpsError("unauthenticated", "You must be signed in.");
     }
     const callerRole = request.auth.token["role"] as string | undefined;
-    if (callerRole !== "ADMIN") {
+    if (callerRole !== umConfig.roles.admin) {
       throw new HttpsError("permission-denied", "Only ADMINs can reject requests.");
     }
 
@@ -32,7 +33,7 @@ export const rejectAccessRequest = onCall(
     }
 
     const db = getFirestore();
-    const requestRef = db.collection("accessRequests").doc(requestId);
+    const requestRef = db.collection(umConfig.collections.accessRequests).doc(requestId);
     const snap = await requestRef.get();
 
     if (!snap.exists) {
@@ -56,7 +57,7 @@ export const rejectAccessRequest = onCall(
     // and delivers every document it finds there. We write here with the Admin
     // SDK so Firestore security rules are bypassed. The `mail` collection rules
     // deny all client reads/writes.
-    await db.collection("mail").add({
+    await db.collection(umConfig.collections.mail).add({
       to: recipientEmail,
       message: {
         subject: "Update on your access request",
@@ -68,14 +69,14 @@ export const rejectAccessRequest = onCall(
           "",
           "You are welcome to submit a new request in the future.",
           "",
-          "— The Pew Pew Wiki team",
+          `— The ${umConfig.appName} team`,
         ].join("\n"),
         html: [
           "<p>Hello,</p>",
           "<p>We have reviewed your access request and unfortunately are unable",
           "to grant access at this time.</p>",
           "<p>You are welcome to submit a new request in the future.</p>",
-          "<p>— The Pew Pew Wiki team</p>",
+          `<p>— The ${umConfig.appName} team</p>`,
         ].join("\n"),
       },
       // Timestamp lets us query/clean up stale mail documents if needed.

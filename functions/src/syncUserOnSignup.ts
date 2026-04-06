@@ -1,12 +1,7 @@
 import { beforeUserCreated, HttpsError } from "firebase-functions/v2/identity";
 import { getDataConnect } from "firebase-admin/data-connect";
 import { logger } from "firebase-functions";
-
-const connectorConfig = {
-  location: "europe-north1",
-  serviceId: "pew-pew",
-  connector: "pew-pew-connector",
-};
+import { umConfig } from "./umConfig";
 
 /** OAuth provider IDs that require a pre-existing invitation. */
 const OAUTH_PROVIDER_IDS = new Set(["google.com", "microsoft.com"]);
@@ -23,7 +18,7 @@ const OAUTH_PROVIDER_IDS = new Set(["google.com", "microsoft.com"]);
  *    so that `auth.token.role` is immediately available in @auth expressions.
  */
 export const syncUserOnSignup = beforeUserCreated(
-  { region: "europe-north1" },
+  { region: umConfig.region },
   async (event) => {
     const uid = event.data?.uid;
     const email = event.data?.email ?? "";
@@ -33,7 +28,7 @@ export const syncUserOnSignup = beforeUserCreated(
       return;
     }
 
-    const dc = getDataConnect(connectorConfig);
+    const dc = getDataConnect(umConfig.connector);
     const isOAuthSignup = providerData.some((p) =>
       OAUTH_PROVIDER_IDS.has(p.providerId)
     );
@@ -83,7 +78,7 @@ export const syncUserOnSignup = beforeUserCreated(
         "syncUserOnSignup: OAuth sign-in allowed for pre-registered email",
         { email }
       );
-      return { customClaims: { role: "VIEWER" } };
+      return { customClaims: { role: umConfig.roles.viewer } };
     }
 
     // Email/password or Admin-SDK-created account: upsert the User row.
@@ -91,12 +86,12 @@ export const syncUserOnSignup = beforeUserCreated(
       await dc.upsert("user", {
         id: uid,
         email,
-        role: "VIEWER",
+        role: umConfig.roles.viewer,
       });
     } catch (err) {
       logger.error("syncUserOnSignup: failed to upsert User row", { uid, err });
     }
 
-    return { customClaims: { role: "VIEWER" } };
+    return { customClaims: { role: umConfig.roles.viewer } };
   }
 );

@@ -8,6 +8,7 @@ import {
 } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { Button } from "@/components/ui/button";
+import { umConfig } from "@/lib/umConfig";
 import { Input } from "@/components/ui/input";
 import {
   Dialog,
@@ -172,7 +173,7 @@ export default function ProfilePage() {
       await requestAccountDeletionCallable();
       // Account is now disabled; sign out and redirect.
       await signOut();
-      navigate("/login", { replace: true });
+      navigate(umConfig.routes.login, { replace: true });
     } catch (err) {
       setDeleteError(
         err instanceof FirebaseError

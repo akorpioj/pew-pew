@@ -1,6 +1,7 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getAuth } from "firebase-admin/auth";
 import { writeAuditLog } from "./auditLog";
+import { umConfig } from "./umConfig";
 
 /**
  * Admin-only callable that disables a Firebase Auth account (soft delete).
@@ -17,13 +18,13 @@ import { writeAuditLog } from "./auditLog";
  *  - Admin cannot revoke their own access.
  */
 export const revokeUserAccess = onCall(
-  { region: "europe-north1" },
+  { region: umConfig.region },
   async (request) => {
     if (!request.auth) {
       throw new HttpsError("unauthenticated", "You must be signed in.");
     }
     const callerRole = request.auth.token["role"] as string | undefined;
-    if (callerRole !== "ADMIN") {
+    if (callerRole !== umConfig.roles.admin) {
       throw new HttpsError("permission-denied", "Only ADMINs can revoke access.");
     }
 
@@ -61,13 +62,13 @@ export const revokeUserAccess = onCall(
  *  - Caller must be ADMIN.
  */
 export const restoreUserAccess = onCall(
-  { region: "europe-north1" },
+  { region: umConfig.region },
   async (request) => {
     if (!request.auth) {
       throw new HttpsError("unauthenticated", "You must be signed in.");
     }
     const callerRole = request.auth.token["role"] as string | undefined;
-    if (callerRole !== "ADMIN") {
+    if (callerRole !== umConfig.roles.admin) {
       throw new HttpsError("permission-denied", "Only ADMINs can restore access.");
     }
 

@@ -1,4 +1,5 @@
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { umConfig } from "./umConfig";
 
 export type AuditAction =
   | "invite_sent"
@@ -26,7 +27,7 @@ export async function writeAuditLog(
   extra?: Record<string, unknown>
 ): Promise<void> {
   const db = getFirestore();
-  await db.collection("adminAuditLog").add({
+  await db.collection(umConfig.collections.adminAuditLog).add({
     actorUid,
     targetUid,
     action,

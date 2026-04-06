@@ -3,6 +3,7 @@ import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import { getAuth } from "firebase-admin/auth";
 import { sendInviteInternal } from "./sendInvite";
 import { writeAuditLog } from "./auditLog";
+import { umConfig } from "./umConfig";
 
 /**
  * Admin-only callable that approves a pending access request.
@@ -16,14 +17,14 @@ import { writeAuditLog } from "./auditLog";
  *     the invite email.
  */
 export const approveAccessRequest = onCall(
-  { region: "europe-north1" },
+  { region: umConfig.region },
   async (request) => {
     // ── Auth guard ────────────────────────────────────────────────────────────
     if (!request.auth) {
       throw new HttpsError("unauthenticated", "You must be signed in.");
     }
     const callerRole = request.auth.token["role"] as string | undefined;
-    if (callerRole !== "ADMIN") {
+    if (callerRole !== umConfig.roles.admin) {
       throw new HttpsError("permission-denied", "Only ADMINs can approve requests.");
     }
 
@@ -40,7 +41,7 @@ export const approveAccessRequest = onCall(
     }
 
     const db = getFirestore();
-    const requestRef = db.collection("accessRequests").doc(requestId);
+    const requestRef = db.collection(umConfig.collections.accessRequests).doc(requestId);
     const snap = await requestRef.get();
 
     if (!snap.exists) {

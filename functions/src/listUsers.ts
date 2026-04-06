@@ -1,5 +1,6 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getAuth } from "firebase-admin/auth";
+import { umConfig } from "./umConfig";
 
 export interface UserRecord {
   uid: string;
@@ -19,13 +20,13 @@ export interface UserRecord {
  * one call is acceptable.
  */
 export const listUsers = onCall(
-  { region: "europe-north1" },
+  { region: umConfig.region },
   async (request): Promise<{ users: UserRecord[] }> => {
     if (!request.auth) {
       throw new HttpsError("unauthenticated", "You must be signed in.");
     }
     const callerRole = request.auth.token["role"] as string | undefined;
-    if (callerRole !== "ADMIN") {
+    if (callerRole !== umConfig.roles.admin) {
       throw new HttpsError("permission-denied", "Only ADMINs can list users.");
     }
 
@@ -40,7 +41,7 @@ export const listUsers = onCall(
           uid: user.uid,
           email: user.email ?? "",
           displayName: user.displayName ?? null,
-          role: (user.customClaims?.["role"] as string | undefined) ?? "VIEWER",
+          role: (user.customClaims?.["role"] as string | undefined) ?? umConfig.roles.viewer,
           disabled: user.disabled,
         });
       }

@@ -5,12 +5,7 @@ import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import { getDataConnect } from "firebase-admin/data-connect";
 import { logger } from "firebase-functions";
 import { writeAuditLog } from "./auditLog";
-
-const connectorConfig = {
-  location: "europe-north1",
-  serviceId: "pew-pew",
-  connector: "pew-pew-connector",
-};
+import { umConfig } from "./umConfig";
 
 /**
  * APP_URL is the base URL of the deployed web app, e.g. https://pew-bab23.web.app
@@ -35,7 +30,7 @@ const appUrl = defineString("APP_URL", { default: "http://localhost:5173" });
 export async function sendInviteInternal(email: string): Promise<void> {
   const auth = getAuth();
   const db = getFirestore();
-  const dc = getDataConnect(connectorConfig);
+  const dc = getDataConnect(umConfig.connector);
 
   // ── 1. Create auth user (idempotent: reuse if already exists) ────────────
   let uid: string;
@@ -56,7 +51,7 @@ export async function sendInviteInternal(email: string): Promise<void> {
 
   // ── 2. Upsert User row in Data Connect ───────────────────────────────────
   try {
-    await dc.upsert("user", { id: uid, email, role: "VIEWER" });
+    await dc.upsert("user", { id: uid, email, role: umConfig.roles.viewer });
   } catch (err) {
     // Log but don't abort — syncUserOnSignup will also attempt this on first
     // sign-in, so a transient DC error here is recoverable.
@@ -75,14 +70,14 @@ export async function sendInviteInternal(email: string): Promise<void> {
   });
 
   // ── 4. Queue invite email via Trigger Email extension ────────────────────
-  await db.collection("mail").add({
+  await db.collection(umConfig.collections.mail).add({
     to: email,
     message: {
-      subject: "You've been invited to Pew Pew Wiki",
+      subject: `You've been invited to ${umConfig.appName}`,
       text: [
         "Hello,",
         "",
-        "You have been granted access to Pew Pew Wiki.",
+        `You have been granted access to ${umConfig.appName}.`,
         "",
         "Click the link below to set up your account:",
         link,
@@ -90,15 +85,15 @@ export async function sendInviteInternal(email: string): Promise<void> {
         "This link expires in 72 hours. If it has expired, please contact",
         "an administrator for a new invite.",
         "",
-        "— The Pew Pew Wiki team",
+        `— The ${umConfig.appName} team`,
       ].join("\n"),
       html: [
         "<p>Hello,</p>",
-        "<p>You have been granted access to Pew Pew Wiki.</p>",
+        `<p>You have been granted access to ${umConfig.appName}.</p>`,
         `<p><a href="${link}">Set up my account</a></p>`,
         "<p>This link expires in 72 hours. If it has expired, please contact",
         "an administrator for a new invite.</p>",
-        "<p>— The Pew Pew Wiki team</p>",
+        `<p>— The ${umConfig.appName} team</p>`,
       ].join("\n"),
     },
     createdAt: FieldValue.serverTimestamp(),
@@ -112,13 +107,13 @@ export async function sendInviteInternal(email: string): Promise<void> {
  * Used by admins from the User Management page to invite users directly.
  */
 export const sendInvite = onCall(
-  { region: "europe-north1" },
+  { region: umConfig.region },
   async (request) => {
     if (!request.auth) {
       throw new HttpsError("unauthenticated", "You must be signed in.");
     }
     const callerRole = request.auth.token["role"] as string | undefined;
-    if (callerRole !== "ADMIN") {
+    if (callerRole !== umConfig.roles.admin) {
       throw new HttpsError("permission-denied", "Only ADMINs can send invites.");
     }
 

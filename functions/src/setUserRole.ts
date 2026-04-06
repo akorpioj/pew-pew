@@ -2,14 +2,9 @@ import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { getAuth } from "firebase-admin/auth";
 import { getDataConnect } from "firebase-admin/data-connect";
 import { writeAuditLog } from "./auditLog";
+import { umConfig } from "./umConfig";
 
 export type UserRole = "ADMIN" | "EXPERT" | "VIEWER";
-
-const connectorConfig = {
-  location: "europe-north1",
-  serviceId: "pew-pew",
-  connector: "pew-pew-connector",
-};
 
 /**
  * Admin-only callable that updates a user's role custom claim and syncs the
@@ -24,14 +19,14 @@ const connectorConfig = {
  * valid roles so the same endpoint can be reused.
  */
 export const setUserRole = onCall(
-  { region: "europe-north1" },
+  { region: umConfig.region },
   async (request) => {
     if (!request.auth) {
       throw new HttpsError("unauthenticated", "You must be signed in.");
     }
 
     const callerRole = request.auth.token["role"] as string | undefined;
-    if (callerRole !== "ADMIN") {
+    if (callerRole !== umConfig.roles.admin) {
       throw new HttpsError(
         "permission-denied",
         "Only ADMINs can change user roles."
@@ -44,7 +39,7 @@ export const setUserRole = onCall(
       throw new HttpsError("invalid-argument", "A valid `uid` is required.");
     }
 
-    const validRoles: UserRole[] = ["ADMIN", "EXPERT", "VIEWER"];
+    const validRoles = Object.values(umConfig.roles) as UserRole[];
     if (!validRoles.includes(role as UserRole)) {
       throw new HttpsError(
         "invalid-argument",
@@ -98,7 +93,7 @@ export const setUserRole = onCall(
     await auth.setCustomUserClaims(uid, { role });
 
     // Sync the role field in Data Connect so the User table stays consistent.
-    const dc = getDataConnect(connectorConfig);
+    const dc = getDataConnect(umConfig.connector);
     await dc.upsert("user", {
       id: uid,
       email: targetUser.email ?? "",

@@ -21,6 +21,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { useAuth } from "@/contexts/AuthContext";
 import CategoryTree from "@/components/CategoryTree";
 import AiAssistantSheet from "@/components/AiAssistantSheet";
+import { umConfig } from "@/lib/umConfig";
 
 export default function WikiLayout() {
   const { user, role, signOut } = useAuth();
@@ -53,7 +54,7 @@ export default function WikiLayout() {
                     <SidebarMenuItem>
                       <SidebarMenuButton
                         tooltip="User Management"
-                        onClick={() => navigate("/admin/users")}
+                        onClick={() => navigate(umConfig.routes.adminUsers)}
                       >
                         <UsersIcon />
                         <span>User Management</span>
@@ -80,7 +81,7 @@ export default function WikiLayout() {
                     <Button
                       variant="ghost"
                       size="icon-xs"
-                      onClick={() => navigate("/profile")}
+                      onClick={() => navigate(umConfig.routes.profile)}
                       aria-label="Profile"
                     />
                   }

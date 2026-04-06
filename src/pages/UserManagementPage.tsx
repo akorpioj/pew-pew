@@ -33,6 +33,7 @@ import {
   sendPasswordResetCallable,
 } from "@/lib/functions";
 import { useAuth } from "@/contexts/AuthContext";
+import { umConfig } from "@/lib/umConfig";
 
 type PendingRequest = AccessRequest & { id: string };
 
@@ -43,12 +44,6 @@ interface UserRow {
   role: string;
   disabled: boolean;
 }
-
-const ROLE_LABELS: Record<string, string> = {
-  ADMIN: "Admin",
-  EXPERT: "Expert",
-  VIEWER: "Viewer",
-};
 
 export default function UserManagementPage() {
   const { user: currentUser } = useAuth();
@@ -160,7 +155,7 @@ export default function UserManagementPage() {
     setUserActionError(null);
     setActingOnUserFlag(row.uid, true);
     try {
-      await setUserRoleCallable({ uid: row.uid, role: "ADMIN" });
+      await setUserRoleCallable({ uid: row.uid, role: umConfig.roles.admin });
       refreshUsers();
     } catch (err) {
       setUserActionError(
@@ -177,7 +172,7 @@ export default function UserManagementPage() {
     setUserActionError(null);
     setActingOnUserFlag(uid, true);
     try {
-      await setUserRoleCallable({ uid, role: "VIEWER" });
+      await setUserRoleCallable({ uid, role: umConfig.roles.viewer });
       refreshUsers();
     } catch (err) {
       setUserActionError(
@@ -499,14 +494,14 @@ export default function UserManagementPage() {
                     <td className="px-4 py-2.5">
                       <span
                         className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-                          u.role === "ADMIN"
+                          u.role === umConfig.roles.admin
                             ? "bg-primary/10 text-primary"
-                            : u.role === "EXPERT"
+                            : u.role === umConfig.roles.expert
                               ? "bg-secondary text-secondary-foreground"
                               : "bg-muted text-muted-foreground"
                         }`}
                       >
-                        {ROLE_LABELS[u.role] ?? u.role}
+                        {umConfig.roleLabels[u.role] ?? u.role}
                       </span>
                     </td>
                     <td className="px-4 py-2.5">
@@ -523,23 +518,23 @@ export default function UserManagementPage() {
                     <td className="px-4 py-2.5">
                       <div className="flex flex-wrap gap-2">
                         {/* Role toggle — EXPERT ↔ VIEWER only; ADMIN is handled below */}
-                        {u.role === "VIEWER" && (
+                        {u.role === umConfig.roles.viewer && (
                           <Button
                             size="sm"
                             variant="outline"
                             disabled={actingOnUser.has(u.uid)}
-                            onClick={() => handleSetRole(u.uid, "EXPERT")}
+                            onClick={() => handleSetRole(u.uid, umConfig.roles.expert)}
                           >
                             {actingOnUser.has(u.uid) ? "…" : "Make Expert"}
                           </Button>
                         )}
-                        {u.role === "EXPERT" && (
+                        {u.role === umConfig.roles.expert && (
                           <>
                             <Button
                               size="sm"
                               variant="outline"
                               disabled={actingOnUser.has(u.uid)}
-                              onClick={() => handleSetRole(u.uid, "VIEWER")}
+                              onClick={() => handleSetRole(u.uid, umConfig.roles.viewer)}
                             >
                               {actingOnUser.has(u.uid) ? "…" : "Remove Expert"}
                             </Button>
@@ -553,7 +548,7 @@ export default function UserManagementPage() {
                             </Button>
                           </>
                         )}
-                        {u.role === "ADMIN" && u.uid !== currentUser?.uid && (
+                        {u.role === umConfig.roles.admin && u.uid !== currentUser?.uid && (
                           <Button
                             size="sm"
                             variant="outline"

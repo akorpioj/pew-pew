@@ -3,6 +3,7 @@ import { defineString } from "firebase-functions/params";
 import { getAuth } from "firebase-admin/auth";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import { writeAuditLog } from "./auditLog";
+import { umConfig } from "./umConfig";
 
 const appUrl = defineString("APP_URL", { default: "http://localhost:5173" });
 
@@ -21,13 +22,13 @@ const appUrl = defineString("APP_URL", { default: "http://localhost:5173" });
  *  - Target user must exist in Firebase Auth.
  */
 export const sendPasswordReset = onCall(
-  { region: "europe-north1" },
+  { region: umConfig.region },
   async (request) => {
     if (!request.auth) {
       throw new HttpsError("unauthenticated", "You must be signed in.");
     }
     const callerRole = request.auth.token["role"] as string | undefined;
-    if (callerRole !== "ADMIN") {
+    if (callerRole !== umConfig.roles.admin) {
       throw new HttpsError(
         "permission-denied",
         "Only ADMINs can trigger password resets."
@@ -59,7 +60,7 @@ export const sendPasswordReset = onCall(
     });
 
     const db = getFirestore();
-    await db.collection("mail").add({
+    await db.collection(umConfig.collections.mail).add({
       to: email,
       message: {
         subject: "Reset your password",
@@ -74,7 +75,7 @@ export const sendPasswordReset = onCall(
           "This link expires in 1 hour. If you did not expect this email,",
           "you can safely ignore it — your password will not change.",
           "",
-          "— The Pew Pew Wiki team",
+          `— The ${umConfig.appName} team`,
         ].join("\n"),
         html: [
           "<p>Hello,</p>",
@@ -82,7 +83,7 @@ export const sendPasswordReset = onCall(
           `<p><a href="${resetLink}">Reset your password</a></p>`,
           "<p>This link expires in 1 hour. If you did not expect this email,",
           "you can safely ignore it — your password will not change.</p>",
-          "<p>— The Pew Pew Wiki team</p>",
+          `<p>— The ${umConfig.appName} team</p>`,
         ].join("\n"),
       },
       createdAt: FieldValue.serverTimestamp(),

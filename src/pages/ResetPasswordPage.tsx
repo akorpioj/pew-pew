@@ -8,6 +8,7 @@ import {
 import { FirebaseError } from "firebase/app";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { umConfig } from "@/lib/umConfig";
 
 type State =
   | "verifying"
@@ -102,10 +103,10 @@ export default function ResetPasswordPage() {
           </p>
         </div>
         <Button asChild>
-          <Link to="/forgot-password">Request a new link</Link>
+          <Link to={umConfig.routes.forgotPassword}>Request a new link</Link>
         </Button>
         <p className="text-sm text-muted-foreground">
-          <Link to="/login" className="underline underline-offset-4 hover:text-primary">
+          <Link to={umConfig.routes.login} className="underline underline-offset-4 hover:text-primary">
             Back to sign in
           </Link>
         </p>
@@ -124,7 +125,7 @@ export default function ResetPasswordPage() {
           </p>
         </div>
         <Button asChild>
-          <Link to="/forgot-password">Request a new link</Link>
+          <Link to={umConfig.routes.forgotPassword}>Request a new link</Link>
         </Button>
       </div>
     );
@@ -140,7 +141,7 @@ export default function ResetPasswordPage() {
             Your password has been changed. You can now sign in.
           </p>
         </div>
-        <Button onClick={() => navigate("/login", { replace: true })}>
+        <Button onClick={() => navigate(umConfig.routes.login, { replace: true })}>
           Sign in
         </Button>
       </div>
@@ -196,7 +197,7 @@ export default function ResetPasswordPage() {
       )}
 
       <p className="text-sm text-muted-foreground">
-        <Link to="/login" className="underline underline-offset-4 hover:text-primary">
+        <Link to={umConfig.routes.login} className="underline underline-offset-4 hover:text-primary">
           Back to sign in
         </Link>
       </p>
