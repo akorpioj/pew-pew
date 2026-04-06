@@ -1,5 +1,5 @@
-import { Outlet, useNavigate } from "react-router-dom";
-import { LogOutIcon, UserIcon, UsersIcon } from "lucide-react";
+import { Outlet } from "react-router-dom";
+import { LogOutIcon, UserIcon } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -21,11 +21,11 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { useAuth } from "@/contexts/AuthContext";
 import CategoryTree from "@/components/CategoryTree";
 import AiAssistantSheet from "@/components/AiAssistantSheet";
-import { umConfig } from "@/lib/umConfig";
+
+const AUTH_PORTAL_URL = import.meta.env.VITE_AUTH_PORTAL_URL as string;
 
 export default function WikiLayout() {
   const { user, role, signOut } = useAuth();
-  const navigate = useNavigate();
 
   return (
     <SidebarProvider>
@@ -51,15 +51,6 @@ export default function WikiLayout() {
                 <SidebarGroupLabel>Admin</SidebarGroupLabel>
                 <SidebarGroupContent>
                   <SidebarMenu>
-                    <SidebarMenuItem>
-                      <SidebarMenuButton
-                        tooltip="User Management"
-                        onClick={() => navigate(umConfig.routes.adminUsers)}
-                      >
-                        <UsersIcon />
-                        <span>User Management</span>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
                   </SidebarMenu>
                 </SidebarGroupContent>
               </SidebarGroup>
@@ -81,7 +72,7 @@ export default function WikiLayout() {
                     <Button
                       variant="ghost"
                       size="icon-xs"
-                      onClick={() => navigate(umConfig.routes.profile)}
+                      onClick={() => { window.location.href = AUTH_PORTAL_URL + "/profile"; }}
                       aria-label="Profile"
                     />
                   }

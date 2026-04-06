@@ -1,11 +1,13 @@
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+
+const AUTH_PORTAL_URL = import.meta.env.VITE_AUTH_PORTAL_URL as string;
 
 /**
  * Wraps protected routes. While auth state is resolving, renders nothing
- * (avoids a flash redirect to /login). Once resolved:
+ * (avoids a flash redirect to login). Once resolved:
  * - Signed in → renders child routes via <Outlet />
- * - Signed out → redirects to /login, preserving the intended URL
+ * - Signed out → redirects to the Auth Portal login page, preserving the intended URL
  *
  * Usage in the router:
  *   <Route element={<ProtectedRoute />}>
@@ -19,7 +21,9 @@ export default function ProtectedRoute() {
   if (loading) return null;
 
   if (!user) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    const returnTo = encodeURIComponent(location.pathname + location.search);
+    window.location.href = `${AUTH_PORTAL_URL}/login?returnTo=${returnTo}`;
+    return null;
   }
 
   return <Outlet />;

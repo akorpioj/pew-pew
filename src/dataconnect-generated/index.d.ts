@@ -179,6 +179,54 @@ export interface User_Key {
   __typename?: 'User_Key';
 }
 
+interface GetCategoryTreeRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<GetCategoryTreeData, undefined>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect): QueryRef<GetCategoryTreeData, undefined>;
+  operationName: string;
+}
+export const getCategoryTreeRef: GetCategoryTreeRef;
+
+export function getCategoryTree(options?: ExecuteQueryOptions): QueryPromise<GetCategoryTreeData, undefined>;
+export function getCategoryTree(dc: DataConnect, options?: ExecuteQueryOptions): QueryPromise<GetCategoryTreeData, undefined>;
+
+interface GetArticlesByCategoryRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetArticlesByCategoryVariables): QueryRef<GetArticlesByCategoryData, GetArticlesByCategoryVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetArticlesByCategoryVariables): QueryRef<GetArticlesByCategoryData, GetArticlesByCategoryVariables>;
+  operationName: string;
+}
+export const getArticlesByCategoryRef: GetArticlesByCategoryRef;
+
+export function getArticlesByCategory(vars: GetArticlesByCategoryVariables, options?: ExecuteQueryOptions): QueryPromise<GetArticlesByCategoryData, GetArticlesByCategoryVariables>;
+export function getArticlesByCategory(dc: DataConnect, vars: GetArticlesByCategoryVariables, options?: ExecuteQueryOptions): QueryPromise<GetArticlesByCategoryData, GetArticlesByCategoryVariables>;
+
+interface GetArticleBySlugRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetArticleBySlugVariables): QueryRef<GetArticleBySlugData, GetArticleBySlugVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetArticleBySlugVariables): QueryRef<GetArticleBySlugData, GetArticleBySlugVariables>;
+  operationName: string;
+}
+export const getArticleBySlugRef: GetArticleBySlugRef;
+
+export function getArticleBySlug(vars: GetArticleBySlugVariables, options?: ExecuteQueryOptions): QueryPromise<GetArticleBySlugData, GetArticleBySlugVariables>;
+export function getArticleBySlug(dc: DataConnect, vars: GetArticleBySlugVariables, options?: ExecuteQueryOptions): QueryPromise<GetArticleBySlugData, GetArticleBySlugVariables>;
+
+interface GetRevisionsByArticleRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetRevisionsByArticleVariables): QueryRef<GetRevisionsByArticleData, GetRevisionsByArticleVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetRevisionsByArticleVariables): QueryRef<GetRevisionsByArticleData, GetRevisionsByArticleVariables>;
+  operationName: string;
+}
+export const getRevisionsByArticleRef: GetRevisionsByArticleRef;
+
+export function getRevisionsByArticle(vars: GetRevisionsByArticleVariables, options?: ExecuteQueryOptions): QueryPromise<GetRevisionsByArticleData, GetRevisionsByArticleVariables>;
+export function getRevisionsByArticle(dc: DataConnect, vars: GetRevisionsByArticleVariables, options?: ExecuteQueryOptions): QueryPromise<GetRevisionsByArticleData, GetRevisionsByArticleVariables>;
+
 interface UpsertArticleRef {
   /* Allow users to create refs without passing in DataConnect */
   (vars: UpsertArticleVariables): MutationRef<UpsertArticleData, UpsertArticleVariables>;
@@ -262,52 +310,4 @@ export const upsertUserRef: UpsertUserRef;
 
 export function upsertUser(vars: UpsertUserVariables): MutationPromise<UpsertUserData, UpsertUserVariables>;
 export function upsertUser(dc: DataConnect, vars: UpsertUserVariables): MutationPromise<UpsertUserData, UpsertUserVariables>;
-
-interface GetCategoryTreeRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (): QueryRef<GetCategoryTreeData, undefined>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect): QueryRef<GetCategoryTreeData, undefined>;
-  operationName: string;
-}
-export const getCategoryTreeRef: GetCategoryTreeRef;
-
-export function getCategoryTree(options?: ExecuteQueryOptions): QueryPromise<GetCategoryTreeData, undefined>;
-export function getCategoryTree(dc: DataConnect, options?: ExecuteQueryOptions): QueryPromise<GetCategoryTreeData, undefined>;
-
-interface GetArticlesByCategoryRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: GetArticlesByCategoryVariables): QueryRef<GetArticlesByCategoryData, GetArticlesByCategoryVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: GetArticlesByCategoryVariables): QueryRef<GetArticlesByCategoryData, GetArticlesByCategoryVariables>;
-  operationName: string;
-}
-export const getArticlesByCategoryRef: GetArticlesByCategoryRef;
-
-export function getArticlesByCategory(vars: GetArticlesByCategoryVariables, options?: ExecuteQueryOptions): QueryPromise<GetArticlesByCategoryData, GetArticlesByCategoryVariables>;
-export function getArticlesByCategory(dc: DataConnect, vars: GetArticlesByCategoryVariables, options?: ExecuteQueryOptions): QueryPromise<GetArticlesByCategoryData, GetArticlesByCategoryVariables>;
-
-interface GetArticleBySlugRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: GetArticleBySlugVariables): QueryRef<GetArticleBySlugData, GetArticleBySlugVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: GetArticleBySlugVariables): QueryRef<GetArticleBySlugData, GetArticleBySlugVariables>;
-  operationName: string;
-}
-export const getArticleBySlugRef: GetArticleBySlugRef;
-
-export function getArticleBySlug(vars: GetArticleBySlugVariables, options?: ExecuteQueryOptions): QueryPromise<GetArticleBySlugData, GetArticleBySlugVariables>;
-export function getArticleBySlug(dc: DataConnect, vars: GetArticleBySlugVariables, options?: ExecuteQueryOptions): QueryPromise<GetArticleBySlugData, GetArticleBySlugVariables>;
-
-interface GetRevisionsByArticleRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: GetRevisionsByArticleVariables): QueryRef<GetRevisionsByArticleData, GetRevisionsByArticleVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: GetRevisionsByArticleVariables): QueryRef<GetRevisionsByArticleData, GetRevisionsByArticleVariables>;
-  operationName: string;
-}
-export const getRevisionsByArticleRef: GetRevisionsByArticleRef;
-
-export function getRevisionsByArticle(vars: GetRevisionsByArticleVariables, options?: ExecuteQueryOptions): QueryPromise<GetRevisionsByArticleData, GetRevisionsByArticleVariables>;
-export function getRevisionsByArticle(dc: DataConnect, vars: GetRevisionsByArticleVariables, options?: ExecuteQueryOptions): QueryPromise<GetRevisionsByArticleData, GetRevisionsByArticleVariables>;
 

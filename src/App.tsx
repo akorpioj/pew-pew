@@ -1,13 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import LoginPage from "@/pages/LoginPage";
-import RequestAccessPage from "@/pages/RequestAccessPage";
-import AcceptInvitePage from "@/pages/AcceptInvitePage";
-import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
-import ResetPasswordPage from "@/pages/ResetPasswordPage";
 import WikiLayout from "@/layouts/WikiLayout";
-import UserManagementPage from "@/pages/UserManagementPage";
-import AdminRoute from "@/components/AdminRoute";
-import ProfilePage from "@/pages/ProfilePage";
 import ArticleListPage from "@/pages/ArticleListPage";
 import ArticleViewPage from "@/pages/ArticleViewPage";
 import ArticleEditorPage from "@/pages/ArticleEditorPage";
@@ -16,17 +8,15 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import ExpertRoute from "@/components/ExpertRoute";
 import ErrorBoundary from "@/components/ErrorBoundary";
 
+const AUTH_PORTAL_URL = import.meta.env.VITE_AUTH_PORTAL_URL;
+
 export default function App() {
   return (
     <ErrorBoundary>
       <BrowserRouter>
         <Routes>
           {/* Public */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/request-access" element={<RequestAccessPage />} />
-          <Route path="/accept-invite" element={<AcceptInvitePage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/login" element={<Navigate to={AUTH_PORTAL_URL + "/login"} replace />} />
 
           {/* Redirect root to wiki */}
           <Route path="/" element={<Navigate to="/wiki" replace />} />
@@ -44,14 +34,6 @@ export default function App() {
                 <Route path="/wiki/edit" element={<ArticleEditorPage />} />
                 <Route path="/wiki/edit/:slug" element={<ArticleEditorPage />} />
               </Route>
-
-              {/* Admin-only routes */}
-              <Route element={<AdminRoute />}>
-                <Route path="/admin/users" element={<UserManagementPage />} />
-              </Route>
-
-              {/* Profile — all authenticated users */}
-              <Route path="/profile" element={<ProfilePage />} />
             </Route>
           </Route>
 

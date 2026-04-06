@@ -7,20 +7,15 @@ import {
 } from "react";
 import {
   onAuthStateChanged,
-  signInWithPopup,
-  signInWithEmailAndPassword,
   signOut,
   type User,
 } from "firebase/auth";
-import { auth, googleProvider, microsoftProvider } from "@/lib/firebase";
+import { auth } from "@/lib/firebase";
 
 interface AuthContextValue {
   user: User | null;
   role: string | null; // Custom claim: 'ADMIN' | 'EXPERT' | 'VIEWER' | null
   loading: boolean;
-  signInWithGoogle: () => Promise<void>;
-  signInWithMicrosoft: () => Promise<void>;
-  signInWithEmailPassword: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -49,21 +44,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return unsubscribe;
   }, []);
 
-  const handleSignInWithGoogle = async () => {
-    await signInWithPopup(auth, googleProvider);
-  };
-
-  const handleSignInWithMicrosoft = async () => {
-    await signInWithPopup(auth, microsoftProvider);
-  };
-
-  const handleSignInWithEmailPassword = async (
-    email: string,
-    password: string
-  ) => {
-    await signInWithEmailAndPassword(auth, email, password);
-  };
-
   const handleSignOut = async () => {
     await signOut(auth);
   };
@@ -74,9 +54,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         role,
         loading,
-        signInWithGoogle: handleSignInWithGoogle,
-        signInWithMicrosoft: handleSignInWithMicrosoft,
-        signInWithEmailPassword: handleSignInWithEmailPassword,
         signOut: handleSignOut,
       }}
     >
